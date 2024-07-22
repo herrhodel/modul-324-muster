@@ -1,0 +1,11 @@
+services:
+  nginx:
+    build: . # Muss zum Ordner mit einem Dockerfile zeigen
+    # image: image # Braucht man nur wenn ein image schon vorhanden ist!
+    container_name: nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ./src/:/usr/share/nginx/html
+    # environment:
+    #   - env_var=env_value
