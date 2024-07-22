@@ -11,4 +11,6 @@ Wie man ein einfaches NGINX image erstellt könnt Ihr in diesem Tutorial nachbau
 Da wird auch darauf eingegangen, dass ihr direkt ein offizielles Image von Nginx holen könnt.
 Das ist natürlich praktisch, zum über ist es aber gut es selbst zu bauen.
 
-  
+## AWS CLI
+
+[https://github.com/marketplace/actions/configure-aws-cli](https://github.com/marketplace/actions/configure-aws-cli)

@@ -1,0 +1,24 @@
+name: AWS CLI Workflow
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  setup-aws-cli:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      
+      - name: Setup AWS CLI
+        uses: sagarsthorat/aws-cli@v1
+        with:
+          region: 'us-east-1'
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-cli-version: latest
+          output-format: json
+
+      - name: Test AWS Connection
+        command: aws sts get-caller-identity
