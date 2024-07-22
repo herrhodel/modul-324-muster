@@ -14,3 +14,13 @@ Das ist natürlich praktisch, zum über ist es aber gut es selbst zu bauen.
 ## AWS CLI
 
 [https://github.com/marketplace/actions/configure-aws-cli](https://github.com/marketplace/actions/configure-aws-cli)
+
+## TODO
+
+- [x] Basic Nginx Image
+- [x] Docker Compose file to build Nginx
+- [x] Connect to AWS with aws-cli from github actions
+- [x] Configure terraform to work on AWS / Basic EC2
+- [ ] Configure aws registry via terraform
+- [ ] Build nginx and push it to registry
+- [ ] Deploy nginx container to aws fargate
