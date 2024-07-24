@@ -3,7 +3,7 @@ FROM ubuntu:24.10
 
 # Install Nginx
 RUN apt-get -y update\
-  && apt-get -y install nginx --no-install-recommends\
+  && apt-get -y install nginx git curl --no-install-recommends\
   && rm -rf /var/lib/apt/lists/*
 
 # Copy the Nginx config
