@@ -46,3 +46,17 @@ resource "aws_instance" "ubuntu2404" {
     Name = "ubuntu2404"
   }
 }
+
+resource "aws_ecr_repository" "ecr" {
+  name                 = "m32c4/ecr-repository"
+  image_tag_mutability = "IMMUTABLE"
+  encryption_configuration {
+    encryption_type = "KMS"
+  }
+  image_scanning_configuration {
+    scan_on_push = true
+  }
+  tags = {
+    Name = "ecr-repository"
+  }
+}
