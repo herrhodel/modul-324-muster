@@ -29,3 +29,6 @@ Das ist natürlich praktisch, zum über ist es aber gut es selbst zu bauen.
 - [ ] Check resources with aws-cli and import them with terraform
 - [ ] Install Kamal
 - [ ] Deploy nginx container to aws fargate
+- [ ] add .editorconfig
+- [ ] HTML Linting
+- [ ] 
