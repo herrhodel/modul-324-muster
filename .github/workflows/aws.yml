@@ -89,6 +89,8 @@ jobs:
           terraform plan
           echo "** Running Terraform Apply**"
           terraform apply -auto-approve
+          echo "** PUBLIC IP**"
+          terraform output ubuntu2404_public_ip
 
       - name: Build, tag, and push image to Amazon ECR
         id: build-image
