@@ -83,8 +83,16 @@ jobs:
         run: |
           echo "** Running Terraform Init**"
           terraform init
+          terraform destroy
           echo "** Running Terraform Validate**"
           terraform validate
+          echo "** Import**"
+          terraform import aws_vpc.myvpc i-myvpc
+          terraform import aws_instance.ubuntu2404 i-ubuntu2404
+          terraform import aws_internet_gateway.mygateway i-mygateway
+          terraform import aws_subnet.mysubnet i-mysubnet
+          terraform import aws_ecr_repository.myecr i-myecr
+
           echo "** Running Terraform Plan**"
           terraform plan
           echo "** Running Terraform Apply**"
