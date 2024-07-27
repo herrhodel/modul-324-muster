@@ -1,3 +1,5 @@
+# General ------------------
+
 terraform {
   required_version = "~> 1.9.2"
   required_providers {
@@ -12,6 +14,9 @@ provider "aws" {
   region = "us-east-1"
 }
 
+# Networking ------------------
+
+## INFO: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/internet_gateway
 resource "aws_internet_gateway" "mygateway" {
   vpc_id = aws_vpc.myvpc.id
 
@@ -20,6 +25,7 @@ resource "aws_internet_gateway" "mygateway" {
   }
 }
 
+## INFO: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc
 resource "aws_vpc" "myvpc" {
   cidr_block = "10.0.0.0/16"
   tags = {
@@ -27,6 +33,7 @@ resource "aws_vpc" "myvpc" {
   }
 }
 
+## INFO: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/subnet
 resource "aws_subnet" "mysubnet" {
   vpc_id                  = aws_vpc.myvpc.id
   cidr_block              = "10.0.1.0/24"
@@ -36,6 +43,9 @@ resource "aws_subnet" "mysubnet" {
   }
 }
 
+# EC2 Instance (ubuntu server) ------------------
+
+## INFO: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance
 resource "aws_instance" "ubuntu2404" {
   ami                         = "ami-04b70fa74e45c3917"
   instance_type               = "t2.nano"
@@ -47,7 +57,16 @@ resource "aws_instance" "ubuntu2404" {
   }
 }
 
-resource "aws_ecr_repository" "ecr" {
+# Container Registry auf AWS ------------------
+
+# HACK: Fix error when registry already exists https://stackoverflow.com/a/75277686
+data "external" "check_repo" {
+  program = ["/usr/bin/bash", "${path.module}/check_aws_repository_exists.sh", "m32c4/ecr-repository", "us-east-1"]
+}
+
+# INFO : https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecr_repository
+resource "aws_ecr_repository" "myecr" {
+  count                = data.external.check_repo.result.success == "true" ? 0 : 1
   name                 = "m32c4/ecr-repository"
   image_tag_mutability = "IMMUTABLE"
   encryption_configuration {
@@ -57,6 +76,6 @@ resource "aws_ecr_repository" "ecr" {
     scan_on_push = true
   }
   tags = {
-    Name = "ecr-repository"
+    Name = "myecr"
   }
 }
