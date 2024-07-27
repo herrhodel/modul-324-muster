@@ -60,45 +60,43 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-          aws-region: ${{ env.AWS_REGION }}
-
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
-      
-      - name: Test AWS Connection
-        run: aws sts get-caller-identity
-
-      - name: Setup Terraform CLI
-        uses: hashicorp/setup-terraform@v2.0.2
-
-      - name: Terraform plan and apply
-        working-directory: terraform
-        run: |
-          echo "** Running Terraform Init**"
-          terraform init
-          echo "** Running Terraform Validate**"
-          terraform validate
-          echo "** Running Terraform Plan**"
-          terraform plan
+      # - name: Configure AWS credentials
+      #   uses: aws-actions/configure-aws-credentials@v1
+      #   with:
+      #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #     aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+      #     aws-region: ${{ env.AWS_REGION }}
+      #
+      # - name: Login to Amazon ECR
+      #   id: login-ecr
+      #   uses: aws-actions/amazon-ecr-login@v1
+      #
+      # - name: Test AWS Connection
+      #   run: aws sts get-caller-identity
+      #
+      # - name: Setup Terraform CLI
+      #   uses: hashicorp/setup-terraform@v2.0.2
+      #
+      # - name: Terraform plan and apply
+      #   working-directory: terraform
+      #   run: |
+      #     echo "** Running Terraform Init**"
+      #     terraform init
+      #     echo "** Running Terraform Validate**"
+      #     terraform validate
+      #     echo "** Running Terraform Plan**"
+      #     terraform plan
           # echo "** Running Terraform Apply**"
           # terraform apply -auto-approve
 
-      # - name: Build, tag, and push image to Amazon ECR
-      #   id: build-image
-      #   env:
-      #     ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-      #     IMAGE_TAG: ${{ github.sha }}
-      #   run: |
-      #     # Build a docker container and
-      #     # push it to ECR so that it can
-      #     # be deployed to ECS.
+      - name: Build, tag, and push image to Amazon ECR
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t nginx:local .
       #     docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
       #     docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
       #     echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT

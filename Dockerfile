@@ -8,6 +8,7 @@ RUN apt-get -y update\
 
 # Copy the Nginx config
 COPY default /etc/nginx/sites-available/default
+# Copy the HTML to the image
 COPY src/* /usr/share/nginx/html
 
 # Expose the port for access

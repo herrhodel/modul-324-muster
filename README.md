@@ -22,6 +22,6 @@ Das ist natürlich praktisch, zum über ist es aber gut es selbst zu bauen.
 - [x] Connect to AWS with aws-cli from github actions
 - [x] Configure terraform to work on AWS / Basic EC2
 - [x] Add devcontainer
-- [ ] Configure aws registry via terraform
 - [ ] Build nginx and push it to registry
+- [ ] Configure aws registry via terraform
 - [ ] Deploy nginx container to aws fargate
