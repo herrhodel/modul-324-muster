@@ -24,4 +24,8 @@ Das ist natürlich praktisch, zum über ist es aber gut es selbst zu bauen.
 - [x] Add devcontainer
 - [x] Configure aws registry via terraform
 - [x] Build nginx and push it to registry
+  - We should not commit the "terraform.tfstate" file
+  - It is deleted after every deploy so resources are created multiple times
+- [ ] Check resources with aws-cli and import them with terraform
+- [ ] Install Kamal
 - [ ] Deploy nginx container to aws fargate

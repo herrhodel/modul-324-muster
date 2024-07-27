@@ -18,7 +18,6 @@ provider "aws" {
 
 ## INFO: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc
 resource "aws_vpc" "myvpc" {
-  id         = "i-myvpc"
   cidr_block = "10.0.0.0/16"
   tags = {
     Name = "myvpc"
@@ -27,7 +26,6 @@ resource "aws_vpc" "myvpc" {
 
 ## INFO: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/internet_gateway
 resource "aws_internet_gateway" "mygateway" {
-  id     = "i-mygateway"
   vpc_id = aws_vpc.myvpc.id
 
   tags = {
@@ -37,7 +35,6 @@ resource "aws_internet_gateway" "mygateway" {
 
 ## INFO: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/subnet
 resource "aws_subnet" "mysubnet" {
-  id                      = "i-mysubnet"
   vpc_id                  = aws_vpc.myvpc.id
   cidr_block              = "10.0.1.0/24"
   map_public_ip_on_launch = true
@@ -50,7 +47,6 @@ resource "aws_subnet" "mysubnet" {
 
 ## INFO: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance
 resource "aws_instance" "ubuntu2404" {
-  id                          = "i-ubuntu2404"
   count                       = data.external.check_repo.result.success == "true" ? 0 : 1
   ami                         = "ami-04b70fa74e45c3917"
   instance_type               = "t2.nano"
@@ -62,9 +58,9 @@ resource "aws_instance" "ubuntu2404" {
   }
 }
 
-output "ubuntu2404_public_ip" {
-  value = aws_instance.ubuntu2404.public_ip
-}
+# output "ubuntu2404_public_ip" {
+#   value = aws_instance.ubuntu2404[0].public_ip
+# }
 
 # Container Registry auf AWS ------------------
 

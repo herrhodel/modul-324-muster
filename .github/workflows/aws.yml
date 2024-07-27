@@ -78,6 +78,21 @@ jobs:
       - name: Setup Terraform CLI
         uses: hashicorp/setup-terraform@v2.0.2
 
+      # - name: Configure Terraform Provider Plugin Cache
+      #   run: |
+      #     plugin_cache_dir="$HOME/.terraform.d/plugin-cache"
+      #     printf '\n\nplugin_cache_dir="%s"' "${plugin_cache_dir}" >> ~/.terraformrc
+      #     mkdir --parents "${plugin_cache_dir}"
+      #
+      # - name: Cache Terraform
+      #   uses: actions/cache@v4
+      #   with:
+      #     path: |
+      #       ~/.terraform.d/plugin-cache
+      #     key: ${{ runner.os }}-terraform-${{ hashFiles('**/.terraform.lock.hcl') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-terraform-
+
       - name: Terraform plan and apply
         working-directory: terraform
         run: |
@@ -86,19 +101,12 @@ jobs:
           terraform destroy
           echo "** Running Terraform Validate**"
           terraform validate
-          echo "** Import**"
-          terraform import aws_vpc.myvpc i-myvpc
-          terraform import aws_instance.ubuntu2404 i-ubuntu2404
-          terraform import aws_internet_gateway.mygateway i-mygateway
-          terraform import aws_subnet.mysubnet i-mysubnet
-          terraform import aws_ecr_repository.myecr i-myecr
-
           echo "** Running Terraform Plan**"
           terraform plan
           echo "** Running Terraform Apply**"
           terraform apply -auto-approve
-          echo "** PUBLIC IP**"
-          terraform output ubuntu2404_public_ip
+          ls -la
+          cat terraform.tfstate
 
       - name: Build, tag, and push image to Amazon ECR
         id: build-image
