@@ -47,7 +47,6 @@ resource "aws_subnet" "mysubnet" {
 
 ## INFO: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance
 resource "aws_instance" "ubuntu2404" {
-  count                       = data.external.check_repo.result.success == "true" ? 0 : 1
   ami                         = "ami-04b70fa74e45c3917"
   instance_type               = "t2.nano"
   subnet_id                   = aws_subnet.mysubnet.id
