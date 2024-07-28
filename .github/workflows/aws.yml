@@ -98,7 +98,7 @@ jobs:
         run: |
           echo "** Running Terraform Init**"
           terraform init
-          terraform destroy
+          # terraform destroy
           echo "** Running Terraform Validate**"
           terraform validate
           echo "** Running Terraform Plan**"
