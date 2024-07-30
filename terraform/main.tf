@@ -58,7 +58,7 @@ resource "aws_instance" "ubuntu2404" {
 }
 
 output "ubuntu2404_public_ip" {
-  value = aws_instance.ubuntu2404.public_ip
+  value = aws_instance.ubuntu2404.*.public_ip
 }
 
 # Container Registry auf AWS ------------------

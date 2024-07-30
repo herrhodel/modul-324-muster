@@ -117,16 +117,17 @@ jobs:
           terraform apply -auto-approve
 
           echo "**Public IPs"
-          SERVER_IP=$(sh ./get_public_ip.sh ubuntu2404)
-          echo "halloserver: $SERVIER_IP"
-          echo "$SERVER_IP" >> $GITHUB_ENV
+          echo "SERVER_IP=$(sh ./get_public_ip.sh ubuntu2404)" >> $GITHUB_ENV
 
       - name: Build, tag, and push image to Amazon ECR
         id: build-image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_USERNAME: ${{ steps.login-ecr.outputs.docker_username }}
+          ECR_PASSWORD: ${{ steps.login-ecr.outputs.docker_password }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
+          echo "halloServer: $ECR_USERNAME"
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
