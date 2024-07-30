@@ -12,7 +12,7 @@ COPY default /etc/nginx/sites-available/default
 COPY src/* /usr/share/nginx/html
 
 # Expose the port for access
-EXPOSE 80/tcp
+EXPOSE 3000/tcp
 
 # Run the Nginx server
 CMD ["/usr/sbin/nginx", "-g", "daemon off;"]

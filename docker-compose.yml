@@ -4,6 +4,6 @@ services:
     # image: image # Braucht man nur wenn ein image schon vorhanden ist!
     container_name: nginx
     ports:
-      - "8080:80"
+      - "3000:3000"
     volumes:
       - ./src/:/usr/share/nginx/html

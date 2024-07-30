@@ -78,21 +78,6 @@ jobs:
       - name: Setup Terraform CLI
         uses: hashicorp/setup-terraform@v2.0.2
 
-      # - name: Configure Terraform Provider Plugin Cache
-      #   run: |
-      #     plugin_cache_dir="$HOME/.terraform.d/plugin-cache"
-      #     printf '\n\nplugin_cache_dir="%s"' "${plugin_cache_dir}" >> ~/.terraformrc
-      #     mkdir --parents "${plugin_cache_dir}"
-      #
-      # - name: Cache Terraform
-      #   uses: actions/cache@v4
-      #   with:
-      #     path: |
-      #       ~/.terraform.d/plugin-cache
-      #     key: ${{ runner.os }}-terraform-${{ hashFiles('**/.terraform.lock.hcl') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-terraform-
-
       - name: Terraform plan and apply
         working-directory: terraform
         shell: bash
@@ -114,24 +99,51 @@ jobs:
           terraform plan
 
           echo "** Running Terraform Apply**"
-          terraform apply -auto-approve
+          # terraform apply -auto-approve
 
           echo "**Public IPs"
           echo "SERVER_IP=$(sh ./get_public_ip.sh ubuntu2404)" >> $GITHUB_ENV
 
-      - name: Build, tag, and push image to Amazon ECR
-        id: build-image
+      ### KAMAL
+      - uses: ruby/setup-ruby@v1
         env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_USERNAME: ${{ steps.login-ecr.outputs.docker_username_941042569534_dkr_ecr_us_east_1_amazonaws_com }}
-          ECR_PASSWORD: ${{ steps.login-ecr.outputs.docker_password_941042569534_dkr_ecr_us_east_1_amazonaws_com }}
-          IMAGE_TAG: ${{ github.sha }}
-        run: |
-          echo "halloServer: $ECR_USERNAME"
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+          BUNDLE_GEMFILE: ./kamal/Gemfile
+        with:
+          ruby-version: 3.2.2
+          bundler-cache: true
 
+      - uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+        with:
+          driver-opts: image=moby/buildkit:master
+
+      - name: Kamal Setup
+        env:
+          KAMAL_SERVER_IP: ${{ env.SERVER_IP }}
+          KAMAL_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          KAMAL_REGISTRY_PASSWORD: ${{ steps.login-ecr.outputs.docker_password_941042569534_dkr_ecr_us_east_1_amazonaws_com }}
+          DOCKER_BUILDKIT: 1
+          BUNDLE_GEMFILE: ./kamal/Gemfile
+        run: |
+          bundle exec kamal setup
+
+      # - name: Build, tag, and push image to Amazon ECR
+      #   id: build-image
+      #   env:
+      #     ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+      #     ECR_USERNAME: ${{ steps.login-ecr.outputs.docker_username_941042569534_dkr_ecr_us_east_1_amazonaws_com }}
+      #     ECR_PASSWORD: ${{ steps.login-ecr.outputs.docker_password_941042569534_dkr_ecr_us_east_1_amazonaws_com }}
+      #     IMAGE_TAG: ${{ github.sha }}
+      #   run: |
+      #     echo "halloServer: $ECR_USERNAME"
+      #     docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+      #     docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+      #     echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+      #
       # - name: Fill in the new image ID in the Amazon ECS task definition
       #   id: task-def
       #   uses: aws-actions/amazon-ecs-render-task-definition@v1

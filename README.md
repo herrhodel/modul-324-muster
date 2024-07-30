@@ -26,9 +26,11 @@ Das ist natürlich praktisch, zum über ist es aber gut es selbst zu bauen.
 - [x] Build nginx and push it to registry
   - We should not commit the "terraform.tfstate" file
   - It is deleted after every deploy so resources are created multiple times
-- [ ] Check resources with aws-cli and import them with terraform
-- [ ] Install Kamal
+  - We import the resources now live!! 😄
+- [x] Check resouces with aws-cli and import them with terraform
+- [x] HTML Linting
+- [x] Install Kamal
+  - [x] repository info to kamal via env
+  - [ ] Remote SSH connection with public ip
 - [ ] Deploy nginx container to aws fargate
 - [ ] add .editorconfig
-- [ ] HTML Linting
-- [ ] 
