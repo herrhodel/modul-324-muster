@@ -99,20 +99,22 @@ jobs:
         run: |
           echo "** Running Terraform Init**"
           terraform init
-          # terraform destroy
+
           echo "** Running Terraform Validate**"
           terraform validate
-          instanceId=$(sh get_ec2_instance_id_by_name.sh ubuntu2404 2>&1)
-          echo "ec2 instanceid: $instanceId"
-          if [ -n "$instanceId" ]; then
-            terraform import aws_instance.ubuntu2404 $instanceId
-          fi
-          echo "** Running Terraform Plan**"
+
+          echo "** Running Terraform import for existing resources**"
+          sh terraform_import_existing_aws_vpc.sh myvpc
+          sh terraform_import_existing_aws_subnet.sh mysubnet
+          sh terraform_import_existing_aws_internet_gateways.sh mygateway
+          sh terraform_import_existing_ec2_instances.sh ubuntu2404
+          sh terraform_import_existing_aws_ecr_repositories.sh myecr
+
+          echo "** Running Terraform plan**"
           terraform plan
+
           echo "** Running Terraform Apply**"
           terraform apply -auto-approve
-          ls -la
-          cat terraform.tfstate
 
       - name: Build, tag, and push image to Amazon ECR
         id: build-image

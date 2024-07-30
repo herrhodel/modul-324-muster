@@ -63,16 +63,10 @@ resource "aws_instance" "ubuntu2404" {
 
 # Container Registry auf AWS ------------------
 
-# HACK: Fix error when registry already exists https://stackoverflow.com/a/75277686
-data "external" "check_repo" {
-  program = ["/usr/bin/bash", "${path.module}/check_aws_repository_exists.sh", "m32c4/ecr-repository", "us-east-1"]
-}
-
 # INFO : https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecr_repository
 resource "aws_ecr_repository" "myecr" {
-  count                = data.external.check_repo.result.success == "true" ? 0 : 1
   name                 = "m32c4/ecr-repository"
-  image_tag_mutability = "IMMUTABLE"
+  image_tag_mutability = "MUTABLE"
   encryption_configuration {
     encryption_type = "KMS"
   }
