@@ -1,51 +1,12 @@
-# This workflow will build and push a new container image to Amazon ECR,
-# and then will deploy a new task definition to Amazon ECS, when there is a push to the "main" branch.
-#
-# To use this workflow, you will need to complete the following set-up steps:
-#
-# 1. Create an ECR repository to store your images.
-#    For example: `aws ecr create-repository --repository-name my-ecr-repo --region us-east-2`.
-#    Replace the value of the `ECR_REPOSITORY` environment variable in the workflow below with your repository's name.
-#    Replace the value of the `AWS_REGION` environment variable in the workflow below with your repository's region.
-#
-# 2. Create an ECS task definition, an ECS cluster, and an ECS service.
-#    For example, follow the Getting Started guide on the ECS console:
-#      https://us-east-2.console.aws.amazon.com/ecs/home?region=us-east-2#/firstRun
-#    Replace the value of the `ECS_SERVICE` environment variable in the workflow below with the name you set for the Amazon ECS service.
-#    Replace the value of the `ECS_CLUSTER` environment variable in the workflow below with the name you set for the cluster.
-#
-# 3. Store your ECS task definition as a JSON file in your repository.
-#    The format should follow the output of `aws ecs register-task-definition --generate-cli-skeleton`.
-#    Replace the value of the `ECS_TASK_DEFINITION` environment variable in the workflow below with the path to the JSON file.
-#    Replace the value of the `CONTAINER_NAME` environment variable in the workflow below with the name of the container
-#    in the `containerDefinitions` section of the task definition.
-#
-# 4. Store an IAM user access key in GitHub Actions secrets named `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
-#    See the documentation for each action used below for the recommended IAM policies for this IAM user,
-#    and best practices on handling the access key credentials.
-
-name: Deploy to Amazon ECS
+name: Setup and deploy to Amazon
 
 on:
   push:
     branches: ["main"]
-    inputs:
-      tfpath:
-        description: "TF File Path"
-        required: false
-        default: "terraform"
 
 env:
   AWS_REGION: us-east-1 # set this to your preferred AWS region, e.g. us-west-1
   ECR_REPOSITORY: m32c4/ecr-repository # set this to your Amazon ECR repository name
-  ECS_SERVICE: MY_ECS_SERVICE # set this to your Amazon ECS service name
-  ECS_CLUSTER: MY_ECS_CLUSTER # set this to your Amazon ECS cluster name
-  ECS_TASK_DEFINITION:
-    MY_ECS_TASK_DEFINITION # set this to the path to your Amazon ECS task definition
-    # file, e.g. .aws/task-definition.json
-  CONTAINER_NAME:
-    MY_CONTAINER_NAME # set this to the name of the container in the
-    # containerDefinitions section of your task definition
 
 permissions:
   contents: read
@@ -57,6 +18,11 @@ jobs:
     environment: aws
 
     steps:
+      - name: Test
+        env:
+          AUTHOR: ${{ github.event.commits[0].author.name }}
+        run: echo $AUTHOR
+
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -79,9 +45,6 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Test AWS Connection
-        run: aws sts get-caller-identity
-
       - name: Setup Terraform CLI
         uses: hashicorp/setup-terraform@v2.0.2
 
@@ -91,77 +54,50 @@ jobs:
           AWS_SSH_PRIVATE_KEY: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
         shell: bash
         run: |
-          # echo "** Running Terraform Init**"
-          # terraform init
-          #
-          # echo "** Running Terraform Validate**"
-          # terraform validate
-          #
-          # echo "** Running Terraform import for existing resources**"
-          # sh terraform_import_existing_aws_vpc.sh
-          # sh terraform_import_existing_aws_subnet.sh
-          # sh terraform_import_existing_aws_internet_gateways.sh
-          # sh terraform_import_existing_aws_route_table.sh
-          # sh terraform_import_existing_aws_security_group.sh
-          # sh terraform_import_existing_ec2_instances.sh
-          # sh terraform_import_existing_aws_ecr_repositories.sh
-          #
-          # echo "** Running Terraform plan**"
-          # terraform plan
-          #
-          # echo "** Running Terraform Apply**"
-          # terraform apply -auto-approve
-          # Write ServerIP al enviroment variable
+          echo "** Running Terraform Init**"
+          terraform init
+
+          echo "** Running Terraform Validate**"
+          terraform validate
+
+          echo "** Running Terraform import for existing resources**"
+          sh terraform_import_existing_aws_vpc.sh
+          sh terraform_import_existing_aws_subnet.sh
+          sh terraform_import_existing_aws_internet_gateways.sh
+          sh terraform_import_existing_aws_route_table.sh
+          sh terraform_import_existing_aws_security_group.sh
+          sh terraform_import_existing_ec2_instances.sh
+          sh terraform_import_existing_aws_ecr_repositories.sh
+
+          echo "** Running Terraform plan**"
+          terraform plan
+
+          echo "** Running Terraform Apply**"
+          terraform apply -auto-approve
+          # write ServerIP as enviroment variable to be used in step "Set up Kamal"
           echo "SERVER_IP=$(sh ./get_public_ip.sh ubuntu2404)" >> $GITHUB_ENV
 
       ### KAMAL
-      - uses: ruby/setup-ruby@v1
+      - name: Set up Ruby for Kamal
+        uses: ruby/setup-ruby@v1
         env:
           BUNDLE_GEMFILE: ./kamal/Gemfile
         with:
           ruby-version: 3.2.2
           bundler-cache: true
 
-      - name: Set up Docker Buildx
+      - name: Set up Docker Buildx for Kamal
         uses: docker/setup-buildx-action@v2
         with:
           driver-opts: image=moby/buildkit:master
 
-      - name: Kamal Setup
+      - name: Set up Kamal
         env:
-          KAMAL_SERVER_IP: ${{ env.SERVER_IP }}
-          KAMAL_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          KAMAL_REGISTRY_PASSWORD: ${{ steps.login-ecr.outputs.docker_password_941042569534_dkr_ecr_us_east_1_amazonaws_com }}
           DOCKER_BUILDKIT: 1
           BUNDLE_GEMFILE: ./kamal/Gemfile
+          KAMAL_SERVER_IP: ${{ env.SERVER_IP }}
+          KAMAL_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          # dynamically get docker password from current AWS_ACCOUNT_ID
+          KAMAL_REGISTRY_PASSWORD: ${{ steps.login-ecr.outputs[format('docker_password_{0}_dkr_ecr_us_east_1_amazonaws_com', secrets.AWS_ACCOUNT_ID)] }}
         run: |
           bundle exec kamal setup
-
-      # - name: Build, tag, and push image to Amazon ECR
-      #   id: build-image
-      #   env:
-      #     ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-      #     ECR_USERNAME: ${{ steps.login-ecr.outputs.docker_username_941042569534_dkr_ecr_us_east_1_amazonaws_com }}
-      #     ECR_PASSWORD: ${{ steps.login-ecr.outputs.docker_password_941042569534_dkr_ecr_us_east_1_amazonaws_com }}
-      #     IMAGE_TAG: ${{ github.sha }}
-      #   run: |
-      #     echo "halloServer: $ECR_USERNAME"
-      #     docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-      #     docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-      #     echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
-      #
-      # - name: Fill in the new image ID in the Amazon ECS task definition
-      #   id: task-def
-      #   uses: aws-actions/amazon-ecs-render-task-definition@v1
-      #   with:
-      #     task-definition: ${{ env.ECS_TASK_DEFINITION }}
-      #     container-name: ${{ env.CONTAINER_NAME }}
-      #     image: ${{ steps.build-image.outputs.image }}
-      #
-      # - name: Deploy Amazon ECS task definition
-      #   uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-      #   with:
-      #     task-definition: ${{ steps.task-def.outputs.task-definition }}
-      #     service: ${{ env.ECS_SERVICE }}
-      #     cluster: ${{ env.ECS_CLUSTER }}
-      #     wait-for-service-stability: true

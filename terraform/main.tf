@@ -108,7 +108,7 @@ resource "aws_instance" "ubuntu2404" {
   instance_type               = "t2.micro"
   subnet_id                   = aws_subnet.mysubnet.id
   depends_on                  = [aws_internet_gateway.mygateway, aws_vpc.myvpc]
-  security_groups             = [aws_security_group.mysecuritygroup.id]
+  vpc_security_group_ids      = [aws_security_group.mysecuritygroup.id]
   associate_public_ip_address = true
 
   # provisioner "remote-exec" {

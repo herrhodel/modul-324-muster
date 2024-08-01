@@ -13,7 +13,7 @@ Das ist natürlich praktisch, zum über ist es aber gut es selbst zu bauen.
 
 ## AWS CLI
 
-[https://github.com/marketplace/actions/configure-aws-cli](https://github.com/marketplace/actions/configure-aws-cli)
+- [https://github.com/marketplace/actions/configure-aws-cli](https://github.com/marketplace/actions/configure-aws-cli)
 
 ## TODO
 
@@ -22,6 +22,7 @@ Das ist natürlich praktisch, zum über ist es aber gut es selbst zu bauen.
 - [x] Connect to AWS with aws-cli from github actions
 - [x] Configure terraform to work on AWS / Basic EC2
 - [x] Add devcontainer
+- [ ] .devcontainer in github.dev
 - [x] Configure aws registry via terraform
 - [x] Build nginx and push it to registry
   - We should not commit the "terraform.tfstate" file
@@ -31,6 +32,11 @@ Das ist natürlich praktisch, zum über ist es aber gut es selbst zu bauen.
 - [x] HTML Linting
 - [x] Install Kamal
   - [x] repository info to kamal via env
-  - [ ] Remote SSH connection with public ip
+  - [x] Remote SSH ection with public ip
+- [x] Access nginx via http port 80
 - [ ] Deploy nginx container to aws fargate
 - [ ] add .editorconfig
+
+## Bonus
+
+- [ ] Access nginx via https port 443 and letsencrypt
