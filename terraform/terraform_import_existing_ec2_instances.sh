@@ -2,10 +2,13 @@
 
 # INFO: $1   : Beinhaltet der erste Parameter, der dem Script übergeben wird
 #       2>&1 : Sendet Errors nach /dev/null, damit das Script nicht beendet wird
-instanceId=$(aws ec2 describe-instances --filter Name=tag:Name,Values="$1" --query 'Reservations[*].Instances[?!contains(State.Name, `terminated`)].{Instance:InstanceId}' --output text 2>&1)
+instanceId=$(aws ec2 describe-instances --filter Name=tag:App,Values=nginx-example --query 'Reservations[*].Instances[?!contains(State.Name, `terminated`)].{Instance:InstanceId}' --output text 2>&1)
+echo "$instanceId"
 
 if [ $? -eq 0 ]; then
-  if [[ -n "$instanceId" ]]; then
-    terraform import aws_instance."$1" "$instanceId" 2>&1
+  if [ -n "$instanceId" ]; then
+    terraform import aws_instance.ubuntu2404 "$instanceId" 2>&1
+  else
+    echo "kukuk"
   fi
 fi

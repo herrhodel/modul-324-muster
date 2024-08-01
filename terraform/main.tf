@@ -14,6 +14,10 @@ provider "aws" {
   region = "us-east-1"
 }
 
+# data "external" "env" {
+#   program = ["${path.module}/env.sh"]
+# }
+
 # Networking ------------------
 
 ## INFO: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc
@@ -22,7 +26,7 @@ resource "aws_vpc" "myvpc" {
   enable_dns_hostnames = true
   enable_dns_support   = true
   tags = {
-    Name = "myvpc"
+    App = "nginx-example"
   }
 }
 
@@ -31,7 +35,7 @@ resource "aws_internet_gateway" "mygateway" {
   vpc_id = aws_vpc.myvpc.id
 
   tags = {
-    Name = "mygateway"
+    App = "nginx-example"
   }
 }
 
@@ -41,21 +45,31 @@ resource "aws_subnet" "mysubnet" {
   cidr_block              = "10.0.1.0/24"
   map_public_ip_on_launch = true
   tags = {
-    Name = "mysubnet"
+    App = "nginx-example"
   }
 }
 
 # SSH
-resource "aws_security_group" "ingress-ssh" {
-  name   = "ingress-ssh"
+resource "aws_security_group" "mysecuritygroup" {
+  name   = "ingress"
   vpc_id = aws_vpc.myvpc.id
   ingress {
-    cidr_blocks = [
-      "0.0.0.0/0"
-    ]
-    from_port = 22
-    to_port   = 22
-    protocol  = "tcp"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
   // Terraform removes the default rule
   egress {
@@ -65,9 +79,10 @@ resource "aws_security_group" "ingress-ssh" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   tags = {
-    Name = "ingress-ssh"
+    App = "nginx-example"
   }
 }
+
 
 resource "aws_route_table" "my-route-table" {
   vpc_id = aws_vpc.myvpc.id
@@ -76,7 +91,7 @@ resource "aws_route_table" "my-route-table" {
     gateway_id = aws_internet_gateway.mygateway.id
   }
   tags = {
-    Name = "my-route-table"
+    App = "nginx-example"
   }
 }
 
@@ -93,20 +108,34 @@ resource "aws_instance" "ubuntu2404" {
   instance_type               = "t2.micro"
   subnet_id                   = aws_subnet.mysubnet.id
   depends_on                  = [aws_internet_gateway.mygateway, aws_vpc.myvpc]
-  security_groups             = [aws_security_group.ingress-ssh.id]
+  security_groups             = [aws_security_group.mysecuritygroup.id]
   associate_public_ip_address = true
 
+  # provisioner "remote-exec" {
+  #   inline = [
+  #     "sudo usermod -aG docker ubuntu",
+  #   ]
+  # }
+  #
+  # connection {
+  #   type        = "ssh"
+  #   user        = "ubuntu"
+  #   password    = ""
+  #   private_key = data.external.env.result["ssh-key"]
+  #   host        = self.public_ip
+  # }
+
   # INFO: Needed for Kamal to work: https://github.com/basecamp/kamal/issues/246
-  user_data = <<-EOL
-    #!/bin/bash -xe
-    sudo usermod -aG docker ubuntu
-  EOL
+  # user_data = <<-EOL
+  #   #!/bin/bash -xe
+  #   sudo usermod -aG docker ubuntu
+  # EOL
 
   # SSH 
   key_name             = "vockey"             # Vockey is added by the aws lab by default
   iam_instance_profile = "LabInstanceProfile" # LabInstanceProfile is added by the aws lab by default
   tags = {
-    Name = "ubuntu2404"
+    App = "nginx-example"
   }
 }
 
@@ -127,6 +156,6 @@ resource "aws_ecr_repository" "myecr" {
     scan_on_push = true
   }
   tags = {
-    Name = "myecr"
+    App = "nginx-example"
   }
 }
