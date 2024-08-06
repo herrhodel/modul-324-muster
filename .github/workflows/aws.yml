@@ -18,10 +18,11 @@ jobs:
     environment: aws
 
     steps:
-      - name: Test
-        env:
-          AUTHOR: ${{ github.event.commits[0].author.name }}
-        run: echo $AUTHOR
+      # - name: Test
+      #   env:
+      #     AUTHOR: ${{ github.event.commits[0].author.name }}
+      #     PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+      #   run: echo $AUTHOR
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -29,9 +30,6 @@ jobs:
       - uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
-
-      - name: check ssh
-        run: ls -la ~/.ssh/
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -74,6 +72,8 @@ jobs:
 
           echo "** Running Terraform Apply**"
           terraform apply -auto-approve
+          sleep 20 # HACK: let it warm up to be ready for later ssh connections
+
           # write ServerIP as enviroment variable to be used in step "Set up Kamal"
           echo "SERVER_IP=$(sh ./get_public_ip.sh ubuntu2404)" >> $GITHUB_ENV
 

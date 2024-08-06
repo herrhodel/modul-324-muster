@@ -83,7 +83,6 @@ resource "aws_security_group" "mysecuritygroup" {
   }
 }
 
-
 resource "aws_route_table" "my-route-table" {
   vpc_id = aws_vpc.myvpc.id
   route {
@@ -105,31 +104,19 @@ resource "aws_route_table_association" "subnet-association" {
 ## INFO: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance
 resource "aws_instance" "ubuntu2404" {
   ami                         = "ami-04b70fa74e45c3917"
-  instance_type               = "t2.micro"
+  instance_type               = "t2.nano"
   subnet_id                   = aws_subnet.mysubnet.id
   depends_on                  = [aws_internet_gateway.mygateway, aws_vpc.myvpc]
   vpc_security_group_ids      = [aws_security_group.mysecuritygroup.id]
   associate_public_ip_address = true
 
-  # provisioner "remote-exec" {
-  #   inline = [
-  #     "sudo usermod -aG docker ubuntu",
-  #   ]
-  # }
-  #
-  # connection {
-  #   type        = "ssh"
-  #   user        = "ubuntu"
-  #   password    = ""
-  #   private_key = data.external.env.result["ssh-key"]
-  #   host        = self.public_ip
-  # }
-
-  # INFO: Needed for Kamal to work: https://github.com/basecamp/kamal/issues/246
-  # user_data = <<-EOL
-  #   #!/bin/bash -xe
-  #   sudo usermod -aG docker ubuntu
-  # EOL
+  # INFO: needed for kamal install to work
+  #       Check the logs at /var/log/cloud-init-output.log in the conatiner
+  user_data = <<EOF
+#!/bin/bash
+adduser docker
+usermod -aG docker ubuntu
+EOF
 
   # SSH 
   key_name             = "vockey"             # Vockey is added by the aws lab by default
