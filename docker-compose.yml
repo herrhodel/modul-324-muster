@@ -1,6 +1,8 @@
 services:
   nginx:
-    build: . # Muss zum Ordner mit einem Dockerfile zeigen
+    build:
+      context: . # Muss zum Ordner mit einem Dockerfile zeigen
+      dockerfile: dev.Dockerfile
     # image: image # Braucht man nur wenn ein image schon vorhanden ist!
     container_name: nginx
     ports:

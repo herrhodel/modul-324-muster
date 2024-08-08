@@ -23,6 +23,7 @@ Das ist natürlich praktisch, zum über ist es aber gut es selbst zu bauen.
 - [x] Configure terraform to work on AWS / Basic EC2
 - [x] Add devcontainer
 - [ ] .devcontainer in github.dev
+- [x] .devcontainer with aws-cli, terraform and kamal working
 - [x] Configure aws registry via terraform
 - [x] Build nginx and push it to registry
   - We should not commit the "terraform.tfstate" file
@@ -34,9 +35,10 @@ Das ist natürlich praktisch, zum über ist es aber gut es selbst zu bauen.
   - [x] repository info to kamal via env
   - [x] Remote SSH ection with public ip
 - [x] Access nginx via http port 80
-- [ ] Deploy nginx container to aws fargate
-- [ ] add .editorconfig
+- [x] add .editorconfig
+- [ ] Kamal config under ./kamal and not ./config
 
 ## Bonus
 
 - [ ] Access nginx via https port 443 and letsencrypt
+- [] Deploy nginx container to aws fargate
