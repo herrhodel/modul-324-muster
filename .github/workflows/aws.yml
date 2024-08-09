@@ -92,9 +92,10 @@ jobs:
           driver-opts: image=moby/buildkit:master
 
       - name: Set up Kamal
+        working-directory: kamal
         env:
           DOCKER_BUILDKIT: 1
-          BUNDLE_GEMFILE: ./kamal/Gemfile
+          BUNDLE_GEMFILE: ./Gemfile
           KAMAL_SERVER_IP: ${{ env.SERVER_IP }}
           KAMAL_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           # dynamically get docker password from current AWS_ACCOUNT_ID

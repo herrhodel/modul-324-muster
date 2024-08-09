@@ -8,7 +8,7 @@ image: m32c4/ecr-repository
 servers:
   web:
     hosts:
-      - <%= ENV.fetch('SERVER_IP') %>
+      - <%= ENV.fetch('KAMAL_SERVER_IP') %>
 
 # Credentials for your image host.
 registry:
@@ -26,12 +26,16 @@ registry:
 #   secret:
 #     - RAILS_MASTER_KEY
 
+hooks_path: ./hooks # path relative to where "kamal" command is run!
+
 ssh:
   # user: root # Default
   user: ubuntu
 
 # Configure builder setup.
-# builder:
+builder:
+  context: ../
+  dockerfile: ../Dockerfile
 #   args:
 #     RUBY_VERSION: 3.2.0
 #   secrets:
@@ -76,7 +80,6 @@ ssh:
 healthcheck:
   path: /up
   port: 3000
-
 # Bridge fingerprinted assets, like JS and CSS, between versions to avoid
 # hitting 404 on in-flight requests. Combines all files from new and old
 # version inside the asset_path.

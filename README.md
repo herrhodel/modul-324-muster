@@ -22,7 +22,7 @@ Das ist natürlich praktisch, zum über ist es aber gut es selbst zu bauen.
 - [x] Connect to AWS with aws-cli from github actions
 - [x] Configure terraform to work on AWS / Basic EC2
 - [x] Add devcontainer
-- [ ] .devcontainer in github.dev
+  - .devcontainer in github.dev nicht möchlich :(
 - [x] .devcontainer with aws-cli, terraform and kamal working
 - [x] Configure aws registry via terraform
 - [x] Build nginx and push it to registry
