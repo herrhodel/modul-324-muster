@@ -32,7 +32,7 @@ hooks_path: ./hooks # path relative to where "kamal" command is run!
 ssh:
   user: ubuntu
   # keys_only: true
-  # keys: ["~/.ssh/ssh-key.pem"]
+  # keys: ["~/.ssh/id_rsa.pem"]
 
 # Configure builder setup.
 builder:
