@@ -24,7 +24,7 @@ CMD ["/usr/sbin/nginx", "-g", "daemon off;"]
 SHELL ["/bin/bash", "-c"]
 
 ## Common tools
-RUN apt-get -y update && apt-get -y install openssl gpg wget zip unzip autoconf patch build-essential rustc libssl-dev libyaml-dev libreadline6-dev zlib1g-dev libgmp-dev libncurses5-dev libffi-dev libgdbm6 libgdbm-dev libdb-dev uuid-dev --no-install-recommends
+RUN apt-get -y update && apt-get -y install jq less openssl openssh-client gpg wget zip unzip autoconf patch build-essential rustc libssl-dev libyaml-dev libreadline6-dev zlib1g-dev libgmp-dev libncurses5-dev libffi-dev libgdbm6 libgdbm-dev libdb-dev uuid-dev --no-install-recommends
 
 ## AWS CLI Apple Silicon
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "awscliv2.zip" \

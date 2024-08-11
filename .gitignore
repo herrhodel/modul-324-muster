@@ -1,6 +1,9 @@
 # Created by https://www.toptal.com/developers/gitignore/api/macos,terraform
 # Edit at https://www.toptal.com/developers/gitignore?templates=macos,terraform
 
+### secrets
+local
+
 ### macOS ###
 # General
 .DS_Store

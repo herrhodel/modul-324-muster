@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://json.schemastore.org/yamllint.json
 # Name of your application. Used to uniquely configure containers.
 service: nginx
 
@@ -29,8 +30,9 @@ registry:
 hooks_path: ./hooks # path relative to where "kamal" command is run!
 
 ssh:
-  # user: root # Default
   user: ubuntu
+  # keys_only: true
+  # keys: ["~/.ssh/ssh-key.pem"]
 
 # Configure builder setup.
 builder:

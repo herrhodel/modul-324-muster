@@ -3,9 +3,11 @@ services:
     build:
       context: . # Muss zum Ordner mit einem Dockerfile zeigen
       dockerfile: dev.Dockerfile
-    # image: image # Braucht man nur wenn ein image schon vorhanden ist!
     container_name: nginx
     ports:
       - "3000:3000"
+    env_file: ./local/.env
     volumes:
       - ./src/:/usr/share/nginx/html
+      - ./local/aws:/root/.aws
+      - ./local/ssh/:/root/.ssh
