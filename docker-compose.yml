@@ -10,4 +10,4 @@ services:
     volumes:
       - ./src/:/usr/share/nginx/html
       - ./local/aws:/root/.aws
-      - ./local/ssh/:/root/.ssh
+      - ./local/ssh/id_rsa.pem:/root/.ssh/id_rsa.pem
