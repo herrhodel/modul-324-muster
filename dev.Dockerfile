@@ -24,7 +24,7 @@ CMD ["/usr/sbin/nginx", "-g", "daemon off;"]
 SHELL ["/bin/bash", "-c"]
 
 ## Common tools
-RUN apt-get -y update && apt-get -y install jq less openssl openssh-client gpg wget zip unzip autoconf patch build-essential rustc libssl-dev libyaml-dev libreadline6-dev zlib1g-dev libgmp-dev libncurses5-dev libffi-dev libgdbm6 libgdbm-dev libdb-dev uuid-dev --no-install-recommends
+RUN apt-get -y update && apt-get -y install neovim jq less openssl openssh-client gpg wget zip unzip autoconf patch build-essential rustc libssl-dev libyaml-dev libreadline6-dev zlib1g-dev libgmp-dev libncurses5-dev libffi-dev libgdbm6 libgdbm-dev libdb-dev uuid-dev --no-install-recommends
 
 ## AWS CLI Apple Silicon
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "awscliv2.zip" \
@@ -53,7 +53,10 @@ RUN sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/
   && curl -sS https://starship.rs/install.sh | sh -s - --yes \
   && echo 'eval "$(starship init bash)"' >> ~/.bashrc \
   && echo 'eval "$(starship init zsh)"' >> ~/.zshrc \
-  && echo 'eval "$(~/.local/bin/mise activate zsh)"' >> ~/.zshrc \
+  && echo 'eval "$(~/.local/bin/mise activate zsh)"' >> ~/.zshrc
 
-
-
+# LazyVim
+RUN git clone https://github.com/LazyVim/starter ~/.config/nvim \
+  && rm -rf ~/.config/nvim/.git
+# && ~/.local/bin/mise plugins install neovim \
+# && ~/.local/bin/mise use --global neovim@nightly \
