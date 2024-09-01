@@ -1,15 +1,26 @@
 services:
-  nginx:
+  devcontainer:
     build:
       context: . # Muss zum Ordner mit einem Dockerfile zeigen
-      dockerfile: dev.Dockerfile
-    container_name: nginx
+      dockerfile: .devcontainer/Dockerfile
+    # Loop to not get down
+    command: /bin/sh -c "while sleep 1000; do :; done"
+    # start nginx
+    # command: /usr/sbin/nginx -g "daemon off;"
+    working_dir: /workspace
+    container_name: devcontainer
     ports:
       - "3000:3000"
     # INFO: auskommentieren, sobald "local" Ordner existiert
     # env_file: ./local/.env
     volumes:
+      # sync workspace
+      - .:/workspace:cached
+
+      # sync nginx files
       - ./src/:/usr/share/nginx/html
+      - ./default:/etc/nginx/sites-available/default
+
       # INFO: auskommentieren, sobald "local" Ordner existiert
       # - ./local/aws:/root/.aws
       # - ./local/ssh/id_rsa.pem:/root/.ssh/id_rsa.pem
