@@ -1,6 +1,8 @@
 # Pull the minimal Ubuntu image
 FROM ubuntu:24.10
 
+LABEL service="nginx"
+
 # Install Nginx
 RUN apt-get -y update\
   && apt-get -y install nginx git curl --no-install-recommends\
