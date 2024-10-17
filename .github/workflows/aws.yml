@@ -2,7 +2,7 @@ name: Setup and deploy to Amazon
 
 on:
   push:
-    branches: ["main", "feat/mysql-accessory"]
+    branches: ["main"]
 
 env:
   AWS_REGION: us-east-1 # set this to your preferred AWS region, e.g. us-west-1
@@ -64,7 +64,7 @@ jobs:
           ruby-version: 3.2.2
           bundler-cache: true
 
-      - name: Expose github environment as shell variables
+      - name: Expose GitHub environment as shell variables
         env:
           SECRETS_CONTEXT: ${{ toJson(secrets) }}
           VARS_CONTEXT: ${{ toJson(vars) }}
@@ -79,23 +79,31 @@ jobs:
       - name: Bootstrap Kamal
         working-directory: kamal
         env:
-          DOCKER_BUILDKIT: 1
-          BUNDLE_GEMFILE: ./Gemfile
           KAMAL_SERVER_IP: ${{ env.SERVER_IP }}
           KAMAL_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          # dynamically get docker password from current AWS_ACCOUNT_ID
           KAMAL_REGISTRY_PASSWORD: ${{ steps.login-ecr.outputs[format('docker_password_{0}_dkr_ecr_us_east_1_amazonaws_com', secrets.AWS_ACCOUNT_ID)] }}
-          # MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
-          # MYSQL_USER: ${{secrets.MYSQL_USER}}
-          # MYSQL_PASSWORD: ${{secrets.MYSQL_PASSWORD}}
-          # MYSQL_DATABASE: ${{secrets.MYSQL_DATABASE}}
         run: |
-          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
-          to_envs() { jq -r "( . // {} ) | to_entries[] | \"\(.key)<<$EOF\n\(.value)\n$EOF\n\""; }
-          echo "$SECRETS_CONTEXT" | to_envs >> $GITHUB_ENV
           # Ensures that all Servers have docker installed
           bundle exec kamal server bootstrap
+          # Push the environment variables to the servers
           bundle exec kamal env push
+
+      # INFO: Uncomment to add mysql to the server
+      #       Also add all envs defiend in the deploy.yml as GitHub Environment vars.
+      # - name: Boot Mysql
+      #   working-directory: kamal
+      #   env:
+      #     KAMAL_SERVER_IP: ${{ env.SERVER_IP }}
+      #     KAMAL_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+      #     KAMAL_REGISTRY_PASSWORD: ${{ steps.login-ecr.outputs[format('docker_password_{0}_dkr_ecr_us_east_1_amazonaws_com', secrets.AWS_ACCOUNT_ID)] }}
+      #   run: |
+      #     if [ $(bundle exec kamal accessory details mysql | grep -c "Accessory mysql") -eq 1 ]
+      #     then
+      #       echo "Mysql already booted."
+      #       bundle exec kamal accessory restart mysql
+      #     else
+      #       bundle exec kamal accessory boot mysql
+      #     fi
 
       ### Build and Deploy
 
@@ -113,11 +121,8 @@ jobs:
       - name: Kamal deploy image
         working-directory: kamal
         env:
-          DOCKER_BUILDKIT: 1
-          BUNDLE_GEMFILE: ./Gemfile
           KAMAL_SERVER_IP: ${{ env.SERVER_IP }}
           KAMAL_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          # dynamically get docker password from current AWS_ACCOUNT_ID
           KAMAL_REGISTRY_PASSWORD: ${{ steps.login-ecr.outputs[format('docker_password_{0}_dkr_ecr_us_east_1_amazonaws_com', secrets.AWS_ACCOUNT_ID)] }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
@@ -125,5 +130,5 @@ jobs:
           # --verbose             more detailed logging
           # --version=$IMAGE_TAG  we set the tag to deploy which has been already pushed before
           #
-          bundle exec kamal setup --skip-push --version=$IMAGE_TAG
-          # bundle exec kamal deploy --skip-push --verbose --version=$IMAGE_TAG
+          # bundle exec kamal setup --skip-push --version=$IMAGE_TAG
+          bundle exec kamal deploy --skip-push --verbose --version=$IMAGE_TAG

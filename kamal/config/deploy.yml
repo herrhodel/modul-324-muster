@@ -19,13 +19,16 @@ registry:
 
   # Always use an access token rather than real password when possible.
   password: <%= ENV.fetch('KAMAL_REGISTRY_PASSWORD') %>
+
 # Inject ENV variables into containers (secrets come from .env).
 # Remember to run `kamal env push` after making changes!
+# INFO: Uncomment to add mysql to the server
+#       Also add all envs as GitHub Environment vars.
 # env:
-#   clear:
-#     DB_HOST: 192.168.0.2
 #   secret:
-#     - RAILS_MASTER_KEY
+#     - MYSQL_USER
+#     - MYSQL_PASSWORD
+#     - MYSQL_DATABASE
 
 hooks_path: ./hooks # path relative to where "kamal" command is run!
 
@@ -47,29 +50,21 @@ builder:
 #     host: ssh://app@192.168.0.1
 
 # Use accessory services (secrets come from .env).
-accessories:
-  mysql:
-    image: mysql:8.0
-    # Same host as the service
-    host: <%= ENV.fetch('KAMAL_SERVER_IP') %>
-    port: 3306
-    env:
-      secret:
-        - MYSQL_ROOT_PASSWORD
-        - MYSQL_USER
-        - MYSQL_PASSWORD
-        - MYSQL_DATABASE
-    # files:
-    #   - config/mysql/production.cnf:/etc/mysql/my.cnf
-    #   - db/production.sql:/docker-entrypoint-initdb.d/setup.sql
-    directories:
-      - data:/var/lib/mysql
-#   redis:
-#     image: redis:7.0
-#     host: 192.168.0.2
-#     port: 6379
+# INFO: Uncomment to add mysql to the server
+#       Also add all envs as GitHub Environment vars.
+# accessories:
+#   mysql:
+#     image: mysql:8.0
+#     host: <%= ENV.fetch('KAMAL_SERVER_IP') %>
+#     port: 3306
+#     env:
+#       secret:
+#         - MYSQL_ROOT_PASSWORD
+#         - MYSQL_USER
+#         - MYSQL_PASSWORD
+#         - MYSQL_DATABASE
 #     directories:
-#       - data:/data
+#       - data:/var/lib/mysql
 
 # Configure custom arguments for Traefik. Be sure to reboot traefik when you modify it.
 # traefik:

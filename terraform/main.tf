@@ -14,10 +14,6 @@ provider "aws" {
   region = "us-east-1"
 }
 
-# data "external" "env" {
-#   program = ["${path.module}/env.sh"]
-# }
-
 # Networking ------------------
 
 ## INFO: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc
@@ -104,7 +100,7 @@ resource "aws_route_table_association" "subnet-association" {
 ## INFO: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance
 resource "aws_instance" "ubuntu2404" {
   ami                         = "ami-04b70fa74e45c3917"
-  instance_type               = "t2.medium"
+  instance_type               = "t2.small"
   subnet_id                   = aws_subnet.mysubnet.id
   depends_on                  = [aws_internet_gateway.mygateway, aws_vpc.myvpc]
   vpc_security_group_ids      = [aws_security_group.mysecuritygroup.id]
