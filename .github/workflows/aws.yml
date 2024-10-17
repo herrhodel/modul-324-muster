@@ -2,7 +2,7 @@ name: Setup and deploy to Amazon
 
 on:
   push:
-    branches: ["main"]
+    branches: ["main", "feat/mysql-accessory"]
 
 env:
   AWS_REGION: us-east-1 # set this to your preferred AWS region, e.g. us-west-1
@@ -64,6 +64,18 @@ jobs:
           ruby-version: 3.2.2
           bundler-cache: true
 
+      - name: Expose github environment as shell variables
+        env:
+          SECRETS_CONTEXT: ${{ toJson(secrets) }}
+          VARS_CONTEXT: ${{ toJson(vars) }}
+        run: |
+          # https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#setting-an-environment-variable
+          # https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#multiline-strings
+          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+          to_envs() { jq -r "( . // {} ) | to_entries[] | \"\(.key)<<$EOF\n\(.value)\n$EOF\n\""; }
+          echo "$VARS_CONTEXT" | to_envs >> $GITHUB_ENV
+          echo "$SECRETS_CONTEXT" | to_envs >> $GITHUB_ENV
+
       - name: Bootstrap Kamal
         working-directory: kamal
         env:
@@ -73,9 +85,17 @@ jobs:
           KAMAL_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           # dynamically get docker password from current AWS_ACCOUNT_ID
           KAMAL_REGISTRY_PASSWORD: ${{ steps.login-ecr.outputs[format('docker_password_{0}_dkr_ecr_us_east_1_amazonaws_com', secrets.AWS_ACCOUNT_ID)] }}
+          # MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+          # MYSQL_USER: ${{secrets.MYSQL_USER}}
+          # MYSQL_PASSWORD: ${{secrets.MYSQL_PASSWORD}}
+          # MYSQL_DATABASE: ${{secrets.MYSQL_DATABASE}}
         run: |
+          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+          to_envs() { jq -r "( . // {} ) | to_entries[] | \"\(.key)<<$EOF\n\(.value)\n$EOF\n\""; }
+          echo "$SECRETS_CONTEXT" | to_envs >> $GITHUB_ENV
           # Ensures that all Servers have docker installed
           bundle exec kamal server bootstrap
+          bundle exec kamal env push
 
       ### Build and Deploy
 

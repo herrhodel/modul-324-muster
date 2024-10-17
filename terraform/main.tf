@@ -104,7 +104,7 @@ resource "aws_route_table_association" "subnet-association" {
 ## INFO: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance
 resource "aws_instance" "ubuntu2404" {
   ami                         = "ami-04b70fa74e45c3917"
-  instance_type               = "t2.nano"
+  instance_type               = "t2.medium"
   subnet_id                   = aws_subnet.mysubnet.id
   depends_on                  = [aws_internet_gateway.mygateway, aws_vpc.myvpc]
   vpc_security_group_ids      = [aws_security_group.mysecuritygroup.id]
@@ -118,7 +118,7 @@ adduser docker
 usermod -aG docker ubuntu
 EOF
 
-  # SSH 
+  # SSH
   key_name             = "vockey"             # Vockey is added by the aws lab by default
   iam_instance_profile = "LabInstanceProfile" # LabInstanceProfile is added by the aws lab by default
   tags = {
