@@ -28,4 +28,4 @@ terraform apply -auto-approve
 sleep 20 # HACK: let it warm up to be ready for later ssh connections
 
 # write ServerIP as enviroment variable to be used in step "Set up Kamal"
-echo "SERVER_IP=$(sh scripts/get_public_ip.sh ubuntu2404)" >>$GITHUB_ENV
+echo "server-ip=$(sh scripts/get_public_ip.sh ubuntu2404)" >>$GITHUB_OUTPUT

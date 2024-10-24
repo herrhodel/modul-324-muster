@@ -10,6 +10,8 @@ servers:
   web:
     hosts:
       - <%= ENV.fetch('KAMAL_SERVER_IP') %>
+    options:
+      network: "kamal" # INFO: needs `docker network create kamal` on the servers!
 
 # Credentials for your image host.
 registry:
@@ -58,11 +60,15 @@ builder:
 #     host: <%= ENV.fetch('KAMAL_SERVER_IP') %>
 #     port: 3306
 #     env:
+#       clear:
+#         MYSQL_ROOT_HOST: "%"
 #       secret:
 #         - MYSQL_ROOT_PASSWORD
 #         - MYSQL_USER
 #         - MYSQL_PASSWORD
 #         - MYSQL_DATABASE
+#     options:
+#       network: "kamal" # INFO: needs `docker network create kamal` on the servers!
 #     directories:
 #       - data:/var/lib/mysql
 
