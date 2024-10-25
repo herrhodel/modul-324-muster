@@ -41,8 +41,8 @@ ssh:
 
 # Configure builder setup.
 builder:
-  context: ../
-  dockerfile: ../Dockerfile
+  context: ../nginx
+  dockerfile: ../nginx/Dockerfile
 #   args:
 #     RUBY_VERSION: 3.2.0
 #   secrets:
