@@ -3,7 +3,7 @@
 service: nginx
 
 # Name of the container image.
-image: m32c4/ecr-repository
+image: m324/nginx
 
 # Deploy to these servers.
 servers:

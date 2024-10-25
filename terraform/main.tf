@@ -130,7 +130,7 @@ output "ubuntu2404_public_ip" {
 
 # INFO : https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecr_repository
 resource "aws_ecr_repository" "myecr" {
-  name                 = "m32c4/ecr-repository"
+  name                 = "m324/nginx"
   image_tag_mutability = "MUTABLE"
   encryption_configuration {
     encryption_type = "KMS"
