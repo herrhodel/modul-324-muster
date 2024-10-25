@@ -6,11 +6,6 @@ RUN apt-get -y update \
   && apt-get -y install nginx git curl gnupg software-properties-common --no-install-recommends \
   && rm -rf /var/lib/apt/lists/*
 
-# # Copy the Nginx config
-# COPY default /etc/nginx/sites-available/default
-# # Copy the HTML to the image
-# COPY src/* /usr/share/nginx/html
-
 # Expose the port for access
 EXPOSE 3000/tcp
 
@@ -31,10 +26,10 @@ RUN curl https://mise.run | sh \
   && echo 'eval "$(~/.local/bin/mise activate bash)"' >> ~/.bashrc
 
 ## Java
-RUN  ~/.local/bin/mise use --global java@latest
+# RUN  ~/.local/bin/mise use --global java@latest
 
 ## Nodejs
-RUN  ~/.local/bin/mise use --global node@latest
+# RUN  ~/.local/bin/mise use --global node@latest
 
 # Funky Terminal
 RUN sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/v1.2.0/zsh-in-docker.sh)" -- \
@@ -67,9 +62,5 @@ RUN sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/
 #   && echo 'eval "$(~/.local/bin/mise activate bash)"' >> ~/.bashrc \
 #   && ~/.local/bin/mise use --global ruby@3.2.2 \
 #   && ~/.local/share/mise/installs/ruby/3.2.2/bin/gem install kamal
-
-# LazyVim
-# RUN git clone https://github.com/LazyVim/starter ~/.config/nvim \
-#   && rm -rf ~/.config/nvim/.git
 
 WORKDIR /workspace
