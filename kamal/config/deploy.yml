@@ -73,7 +73,9 @@ builder:
 #       - data:/var/lib/mysql
 
 # Configure custom arguments for Traefik. Be sure to reboot traefik when you modify it.
-# traefik:
+traefik:
+  options:
+    network: "kamal" # INFO: needs `docker network create kamal` on the servers!
 #   args:
 #     accesslog: true
 #     accesslog.format: json

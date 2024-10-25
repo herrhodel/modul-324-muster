@@ -16,8 +16,6 @@ jobs:
     environment: aws
     outputs:
       server-ip: ${{ steps.terraform-apply.outputs.server-ip }}
-      registry: ${{ steps.login-ecr.outputs.registry }}
-      registry-pw: ${{ steps.login-ecr.outputs[format('docker_password_{0}_dkr_ecr_us_east_1_amazonaws_com', secrets.AWS_ACCOUNT_ID)] }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -40,11 +38,10 @@ jobs:
       - name: Terraform plan and apply
         id: terraform-apply
         working-directory: terraform
-        env:
-          AWS_SSH_PRIVATE_KEY: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
         shell: bash
         run: |
           bash deploy.sh
+          echo "server-ip=$(sh scripts/get_public_ip.sh ubuntu2404)" >> $GITHUB_OUTPUT
 
   kamal:
     name: Bootstrap Kamal on AWS EC2 instance
@@ -54,6 +51,18 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
 
       - uses: webfactory/ssh-agent@v0.9.0
         with:
@@ -83,14 +92,13 @@ jobs:
         working-directory: kamal
         env:
           KAMAL_SERVER_IP: ${{ needs.terraform.outputs.server-ip }}
-          KAMAL_REGISTRY: ${{ needs.terraform.outputs.registry }}
-          KAMAL_REGISTRY_PASSWORD: ${{ needs.terraform.outputs.registry-pw }}
+          KAMAL_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          KAMAL_REGISTRY_PASSWORD: ${{ steps.login-ecr.outputs[format('docker_password_{0}_dkr_ecr_us_east_1_amazonaws_com', secrets.AWS_ACCOUNT_ID)] }}
         run: |
           # Ensures that all Servers have docker installed
           bundle exec kamal server bootstrap
           # Push the environment variables to the servers
           bundle exec kamal env push
-          bundle exec kamal traefik boot
 
       # INFO: Uncomment to add mysql to the server
       #       Also add all envs defiend in the deploy.yml as GitHub Environment vars.
