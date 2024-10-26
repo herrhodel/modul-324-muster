@@ -1,6 +1,8 @@
 # Pull the minimal Ubuntu image
 FROM ubuntu:24.10
 
+# INFO: Das label "service" muss gesetzt damit kamal deploy funktioniert
+#       Der Wert muss gleich sein wie der name `../kamal/config/deploy.yml`
 LABEL service="nginx"
 
 # Install Nginx

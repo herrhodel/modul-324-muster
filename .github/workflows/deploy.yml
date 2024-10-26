@@ -7,8 +7,8 @@ on:
     branches: ["main"]
 
 env:
-  AWS_REGION: us-east-1 # set this to your preferred AWS region, e.g. us-west-1
-  ECR_REPOSITORY: m324/nginx # set this to your Amazon ECR repository name
+  AWS_REGION: us-east-1
+  DOCKER_IMAGE_NAME: m324/nginx
 
 permissions:
   contents: read
@@ -58,8 +58,8 @@ jobs:
         working-directory: kamal
         env:
           KAMAL_SERVER_IP: ${{ env.SERVER_IP }}
-          KAMAL_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          KAMAL_REGISTRY_PASSWORD: ${{ steps.login-ecr.outputs[format('docker_password_{0}_dkr_ecr_us_east_1_amazonaws_com', secrets.AWS_ACCOUNT_ID)] }}
+          KAMAL_REGISTRY: "not-used-to-push-envs"
+          KAMAL_REGISTRY_PASSWORD: "not-used-to-push-envs"
         run: |
           EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
           to_envs() { jq -r "( . // {} ) | to_entries[] | \"\(.key)<<$EOF\n\(.value)\n$EOF\n\""; }
@@ -75,7 +75,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}
+            ${{ steps.login-ecr.outputs.registry }}/${{ env.DOCKER_IMAGE_NAME }}
           tags: type=sha
 
       - name: Build and push nginx Image
@@ -94,10 +94,4 @@ jobs:
           KAMAL_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           KAMAL_REGISTRY_PASSWORD: ${{ steps.login-ecr.outputs[format('docker_password_{0}_dkr_ecr_us_east_1_amazonaws_com', secrets.AWS_ACCOUNT_ID)] }}
           VERSION: ${{ steps.meta.outputs.version }}
-        run: |
-          # --skip-push           tell kamal to not build the image
-          # --verbose             more detailed logging
-          # --version=$IMAGE_TAG  we set the tag to deploy which has been already pushed before
-          #
-          # bundle exec kamal setup --skip-push --version=$IMAGE_TAG
-          bundle exec kamal deploy --skip-push --version=$VERSION
+        run: bundle exec kamal deploy --skip-push --version=$VERSION
