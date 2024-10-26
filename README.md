@@ -11,7 +11,7 @@ Beispiel einer CI/CD Pipeline in die AWS Academy Umgebung.
 
 ## :information_desk_person: Anleitungen auf der Modulwebseite
 
-- In AWS Umgebung starten
+- [In AWS Umgebung starten](https://codingluke.github.io/bbzbl-modul-324/docs/lektionen/woche01/aufgabe-amazon-aws-umgebung-starten)
 - AWS Credentials übertragen
 - AWS Umgebung aufsetzen
 - Nginx Image bauen und ausliefern
