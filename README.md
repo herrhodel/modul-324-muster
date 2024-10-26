@@ -12,9 +12,9 @@ Beispiel einer CI/CD Pipeline in die AWS Academy Umgebung.
 ## :information_desk_person: Anleitungen auf der Modulwebseite
 
 - [In AWS Umgebung starten](https://codingluke.github.io/bbzbl-modul-324/docs/lektionen/woche01/aufgabe-amazon-aws-umgebung-starten)
-- AWS Credentials übertragen
-- AWS Umgebung aufsetzen
-- Nginx Image bauen und ausliefern
+- [AWS Credentials übertragen](https://codingluke.github.io/bbzbl-modul-324/docs/lektionen/woche01/nginx-example-klonen#aws-credentials-in-repository-environment-variablen-%C3%BCbertragen)
+- [AWS Umgebung aufsetzen](https://codingluke.github.io/bbzbl-modul-324/docs/lektionen/woche01/aufgabe-nginx-example-klonen#amazon-aws-infrastruktur-aufsetzten)
+- [Nginx Image bauen und ausliefern](https://codingluke.github.io/bbzbl-modul-324/docs/lektionen/woche01/aufgabe-nginx-example-klonen#nginx-image-bauen-und-ausliefern-deployen)
 - Lokale Entwicklungsumgebung konfigurieren
 - Devcontainer Dockerfile erweitern
 - Eine eigene Applikation erstellen
