@@ -16,6 +16,7 @@ Beispiel einer CI/CD Pipeline in die AWS Academy Umgebung.
 - AWS Umgebung aufsetzen
 - Nginx Image bauen und ausliefern
 - Lokale Entwicklungsumgebung konfigurieren
+- Devcontainer Dockerfile erweitern
 - Eine eigene Applikation erstellen
 - Eine eigene Applikation deployen
 

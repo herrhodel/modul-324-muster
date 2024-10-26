@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
 name: Setup Infrastructure on Amazon AWS
 
 on: workflow_dispatch
