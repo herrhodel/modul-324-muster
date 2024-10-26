@@ -2,7 +2,7 @@
 
 ## Was ist Kamal?
 
-[Kamal](https://kamal-deploy.org/) ist ein "Utility-Framework" mit deren Hilfe eine Web-Applikation die über ein `Dockerfile` verfügt,
+[Kamal](https://kamal-deploy.org/) ist ein "Utility-Framework" mit deren Hilfe eine Web-Applikation als docker-image,
 auf einen beliebigen ubuntu Server ausgeliefert (deployt) werden kann.
 
 ## Wieso verwenden wir Kamal im Modul?

@@ -1,6 +1,6 @@
-# Documentation
+# Dokumentation
 
-Hier im Ordner `/docs` ist Platz für allgeimeine Dokumentation, wobei Ihr im Unterordner `/docs/reflections`
+Hier im Ordner `/docs` ist Platz für allgemeine Dokumentation, wobei Ihr im Unterordner `/docs/reflections`
 eure Sprint-Reflexionen schreiben sollt.
 
 ## Aufgaben
@@ -13,9 +13,9 @@ In diesem Unterordner soll für die zwei Sprints die jeweilige Reflexion geschri
 3. Die Reflexion schreiben
 
 > [!NOTE]
-> Die Reflexion soll in einem eigenen Branch geschrieben werden. Für diese soll einen PR erstellt werden.
+> Die Reflexion soll in einem eigenen Branch geschrieben werden. Für diese soll einen Pull-Request erstellt werden.
 
 > [!TIP]
 > die Commit-Message sollte diese Konvention haben
 >
->   `docs(reflexion): sprint 1 reflexion ihr-nachname`
+> `docs(reflexion): Sprint 1 Reflexion Ihr-Nachname`
