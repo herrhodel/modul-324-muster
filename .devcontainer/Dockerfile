@@ -28,10 +28,10 @@ RUN curl https://mise.run | sh \
   && echo 'eval "$(~/.local/bin/mise activate bash)"' >> ~/.bashrc
 
 ## Java
-# RUN  ~/.local/bin/mise use --global java@latest
+# RUN  ~/.local/bin/mise use java@lts -g
 
 ## Nodejs
-# RUN  ~/.local/bin/mise use --global node@latest
+# RUN  ~/.local/bin/mise use node@lts -g
 
 # Funky Terminal
 RUN sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/v1.2.0/zsh-in-docker.sh)" -- \
