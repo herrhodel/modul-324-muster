@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.0](https://github.com/codingluke/bbzbl-modul-324-template/compare/v1.0.0...v1.1.0) (2024-11-02)
+
+
+### Features
+
+* **devcontainer:** add docker-in-docker ([1509dee](https://github.com/codingluke/bbzbl-modul-324-template/commit/1509deecf73c72e642b0054c85203f957cbdb391))
+* **devcontainer:** add vscode plugins ([80624ac](https://github.com/codingluke/bbzbl-modul-324-template/commit/80624ac586921db79e6f0d1885d903f81af1eace))
+
 ## 1.0.0 (2024-10-26)
 
 
