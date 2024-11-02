@@ -9,6 +9,7 @@ services:
     # command: /usr/sbin/nginx -g "daemon off;"
     working_dir: /workspace
     container_name: devcontainer
+    init: true
     ports:
       - "3000:3000"
     # INFO: auskommentieren, sobald "local" Ordner existiert

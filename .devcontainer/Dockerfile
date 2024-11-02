@@ -1,5 +1,7 @@
 # Pull the minimal Ubuntu image
-FROM ubuntu:24.10
+FROM ubuntu:24.04
+
+ENV DOCKER_BUILDKIT=1
 
 # Install Nginx
 RUN apt-get -y update \
