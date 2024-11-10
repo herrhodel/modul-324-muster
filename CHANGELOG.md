@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/codingluke/bbzbl-modul-324-template/compare/v1.1.0...v1.2.0) (2024-11-10)
+
+
+### Features
+
+* **devcontainer:** Better mise support in Dockerfile ([bd92e38](https://github.com/codingluke/bbzbl-modul-324-template/commit/bd92e38a858b91da4b8c68af65536a45510925ae))
+
 ## [1.1.0](https://github.com/codingluke/bbzbl-modul-324-template/compare/v1.0.0...v1.1.0) (2024-11-02)
 
 
