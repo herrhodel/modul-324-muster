@@ -18,4 +18,4 @@ In diesem Unterordner soll für die zwei Sprints die jeweilige Reflexion geschri
 > [!TIP]
 > die Commit-Message sollte diese Konvention haben
 >
-> `docs(reflexion): Sprint 1 Reflexion Ihr-Nachname`
+> `docs(ihr-nachname): Reflexion Sprint 1`
