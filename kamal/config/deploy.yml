@@ -11,7 +11,7 @@ image: m324/nginx
 servers:
   web:
     hosts:
-      - <%= ENV.fetch('KAMAL_SERVER_IP') %>
+      - ENV.fetch('KAMAL_SERVER_IP') %>
     options:
       network: "kamal" # INFO: needs `docker network create kamal` on the servers!
 
@@ -31,15 +31,12 @@ ssh:
   # keys_only: true
   # keys: ["~/.ssh/id_rsa.pem"]
 
-# Configure custom arguments for Traefik. Be sure to reboot traefik when you modify it.
-traefik:
-  options:
-    network: "kamal" # INFO: needs `docker network create kamal` on the servers!
-
-# Configure a custom healthcheck (default is /up on port 3000)
-healthcheck:
-  path: /up
-  port: 3000
+proxy:
+  app_port: 3000
+  healthcheck:
+    path: /up
+    interval: 2
+    timeout: 2
 
 # Inject ENV variables into containers (secrets come from .env).
 # Remember to run `kamal env push` after making changes!
@@ -74,13 +71,12 @@ healthcheck:
 
 # INFO: Not used in our setup as we build isolated
 # Configure builder setup.
-# builder:
-#   context: ../nginx
-#   dockerfile: ../nginx/Dockerfile
-#   args:
-#     RUBY_VERSION: 3.2.0
-#   secrets:
-#     - GITHUB_TOKEN
-#   remote:
-#     arch: amd64
-#     host: ssh://app@192.168.0.1
+builder:
+  context: ../nginx
+  dockerfile: ../nginx/Dockerfile
+  args:
+    RUBY_VERSION: 3.4.2
+  secrets:
+    - GITHUB_TOKEN
+  arch: amd64
+  # remote: ssh://app@192.168.0.1
