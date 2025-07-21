@@ -1,13 +1,14 @@
 # yaml-language-server: $schema=https://json.schemastore.org/yamllint.json
-# Name of your application. Used to uniquely configure containers.
-# INFO: muss gleich sein zum Label "service" des zu deployende Dockerfile
-#       siehe: `../../nginx/Dockerfile`
+# Name der Applikation
+# WARNING: muss gleich sein zum Label "service" des zu deployende Dockerfile
+#          siehe: `../../nginx/Dockerfile`
 service: nginx
 
-# Name of the container image.
+# Name vom Container-Image
 image: m324/nginx
 
-# Deploy to these servers.
+# Auf diese Server deployen
+# INFO: Wir setzen die Öffentliche IP der AWS-VM in der CI-Pipeline
 servers:
   web:
     hosts:
@@ -15,7 +16,7 @@ servers:
     options:
       network: "kamal" # INFO: needs `docker network create kamal` on the servers!
 
-# Credentials for your image host.
+# Anmeldeinfos für die Docker Registry. Bei uns ein aws_ecr_repository
 registry:
   # Specify the registry server, if you're not using Docker Hub
   server: <%= ENV['KAMAL_REGISTRY'] || 'not-defined' %>
@@ -37,11 +38,8 @@ proxy:
     path: /up
     interval: 2
     timeout: 2
-
-# Inject ENV variables into containers (secrets come from .env).
-# Remember to run `kamal env push` after making changes!
-# INFO: Uncomment to add mysql to the server
-#       Also add all envs as GitHub Environment vars.
+# Seten von Environment-Variablen auf der VM
+# Es muss `kamal env push` ausgeführt werden!
 # env:
 #   secret:
 #     - MYSQL_USER
@@ -49,8 +47,8 @@ proxy:
 #     - MYSQL_DATABASE
 
 # Use accessory services (secrets come from .env).
-# INFO: Uncomment to add mysql to the server
-#       Also add all envs as GitHub Environment vars.
+# INFO: Konfiguriert MYSQL auf der VM.
+#       Es müssen alle Environment-Variablen als GitHub Environment-Variablen gesetzt sein.
 # accessories:
 #   mysql:
 #     image: mysql:8.0
@@ -69,14 +67,14 @@ proxy:
 #     directories:
 #       - data:/var/lib/mysql
 
-# INFO: Not used in our setup as we build isolated
+# INFO: Nicht verwendet im Modul, wir builden direkt in der Github Action
 # Configure builder setup.
-builder:
-  context: ../nginx
-  dockerfile: ../nginx/Dockerfile
-  args:
-    RUBY_VERSION: 3.4.2
-  secrets:
-    - GITHUB_TOKEN
-  arch: amd64
-  # remote: ssh://app@192.168.0.1
+# builder:
+#   context: ../nginx
+#   dockerfile: ../nginx/Dockerfile
+#   args:
+#     RUBY_VERSION: 3.4.2
+#   secrets:
+#     - GITHUB_TOKEN
+#   arch: amd64
+# remote: ssh://app@192.168.0.1

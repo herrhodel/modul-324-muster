@@ -47,7 +47,7 @@ jobs:
         env:
           BUNDLE_GEMFILE: ./kamal/Gemfile
         with:
-          ruby-version: 3.2.2
+          ruby-version: 3.4.2
           bundler-cache: true
 
       - name: Login to Amazon ECR
