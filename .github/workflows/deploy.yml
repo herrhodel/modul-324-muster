@@ -75,18 +75,18 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Push environment variables
-        working-directory: kamal
-        env:
-          KAMAL_SERVER_IP: ${{ env.SERVER_IP }}
-          KAMAL_REGISTRY: "not-used-to-push-envs"
-          KAMAL_REGISTRY_PASSWORD: "not-used-to-push-envs"
-        run: |
-          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
-          to_envs() { jq -r "( . // {} ) | to_entries[] | \"\(.key)<<$EOF\n\(.value)\n$EOF\n\""; }
-          echo "$VARS_CONTEXT" | to_envs >> $GITHUB_ENV
-          echo "$SECRETS_CONTEXT" | to_envs >> $GITHUB_ENV
-          bundle exec kamal env push
+      # - name: Push environment variables
+      #   working-directory: kamal
+      #   env:
+      #     KAMAL_SERVER_IP: ${{ env.SERVER_IP }}
+      #     KAMAL_REGISTRY: "not-used-to-push-envs"
+      #     KAMAL_REGISTRY_PASSWORD: "not-used-to-push-envs"
+      #   run: |
+      #     EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+      #     to_envs() { jq -r "( . // {} ) | to_entries[] | \"\(.key)<<$EOF\n\(.value)\n$EOF\n\""; }
+      #     echo "$VARS_CONTEXT" | to_envs >> $GITHUB_ENV
+      #     echo "$SECRETS_CONTEXT" | to_envs >> $GITHUB_ENV
+      #     bundle exec kamal env push
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
