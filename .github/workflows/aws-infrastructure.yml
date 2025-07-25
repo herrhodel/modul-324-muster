@@ -146,7 +146,7 @@ jobs:
           # Ensures that all Servers have docker installed
           bundle exec kamal server bootstrap
           # Push the environment variables to the servers
-          bundle exec kamal env push
+          # bundle exec kamal env push
 
       # INFO: Uncomment to add mysql to the server
       #       Also add all envs defiend in the deploy.yml as GitHub Environment vars.
