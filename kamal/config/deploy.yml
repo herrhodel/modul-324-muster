@@ -31,7 +31,7 @@ ssh:
   # keys: ["../local/ssh/id_rsa.pem"]
 
 proxy:
-  app_port: 3000
+  app_port: 80
   healthcheck:
     path: /up
     interval: 2
