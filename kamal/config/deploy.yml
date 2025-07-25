@@ -23,8 +23,6 @@ registry:
   # Always use an access token rather than real password when possible.
   password: <%= ENV.fetch('KAMAL_REGISTRY_PASSWORD') || 'not-defined' %>
 
-hooks_path: ./hooks # path relative to where "kamal" command is run!
-
 ssh:
   user: ubuntu
   # keys_only: true
