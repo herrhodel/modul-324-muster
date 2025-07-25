@@ -1,9 +1,9 @@
 #!/bin/bash
 
-echo "**cleanup state**"
-rm -rf .terraform || true
-rm terraform.tfstate || true
-rm terraform.tfstate.backup || true
+# echo "**cleanup state**"
+# rm -rf .terraform || true
+# rm terraform.tfstate || true
+# rm terraform.tfstate.backup || true
 
 echo "** Running Terraform Init**"
 terraform init
