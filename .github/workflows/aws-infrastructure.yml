@@ -16,16 +16,41 @@ jobs:
     environment: aws
     outputs:
       server-ip: ${{ steps.terraform-apply.outputs.server-ip }}
+      aws-access-key-id: ${{ steps.expose-aws-env.outputs.aws-access-key-id }}
+      aws-secret-access-key: ${{ steps.expose-aws-env.outputs.aws-secret-access-key }}
+      aws-session-token: ${{ steps.expose-aws-env.outputs.aws-session-token }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Expose AWS Credential as ENV Vars
+        id: expose-aws-env
+        env:
+          AWS_CREDENTIALS: ${{ secrets.AWS_CREDENTIALS }}
+        run: |
+          printf "$AWS_CREDENTIALS\n" |
+          while IFS=' = ' read key value
+          do
+              if [[ $key == \[*] ]]; then
+                  section=$key
+              elif [[ $value ]] && [[ $section == '[default]' ]]; then
+                  if [[ $key == 'aws_access_key_id' ]]; then
+                      echo "aws-access-key-id=$value" >> $GITHUB_OUTPUT
+                  elif [[ $key == 'aws_secret_access_key' ]]; then
+                      echo "aws-secret-access-key=$value" >> $GITHUB_OUTPUT
+                  elif [[ $key == 'aws_session_token' ]]; then
+                      echo "aws-session-token=$value" >> $GITHUB_OUTPUT
+                  fi
+              fi
+          done
+
+      # FIXME: Obuscate secrets!
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-access-key-id: ${{ steps.expose-aws-env.outputs.aws-access-key-id }}
+          aws-secret-access-key: ${{ steps.expose-aws-env.outputs.aws-secret-access-key }}
+          aws-session-token: ${{ steps.expose-aws-env.outputs.aws-session-token }}
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Login to Amazon ECR
@@ -33,7 +58,9 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Setup Terraform CLI
-        uses: hashicorp/setup-terraform@v2.0.2
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.12.2"
 
       - name: Terraform plan and apply
         id: terraform-apply
@@ -52,12 +79,33 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Expose AWS Credential as ENV Vars
+        id: expose-aws-env
+        env:
+          AWS_CREDENTIALS: ${{ secrets.AWS_CREDENTIALS }}
+        run: |
+          printf "$AWS_CREDENTIALS\n" |
+          while IFS=' = ' read key value
+          do
+              if [[ $key == \[*] ]]; then
+                  section=$key
+              elif [[ $value ]] && [[ $section == '[default]' ]]; then
+                  if [[ $key == 'aws_access_key_id' ]]; then
+                      echo "aws-access-key-id=$value" >> $GITHUB_OUTPUT
+                  elif [[ $key == 'aws_secret_access_key' ]]; then
+                      echo "aws-secret-access-key=$value" >> $GITHUB_OUTPUT
+                  elif [[ $key == 'aws_session_token' ]]; then
+                      echo "aws-session-token=$value" >> $GITHUB_OUTPUT
+                  fi
+              fi
+          done
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-access-key-id: ${{ steps.expose-aws-env.outputs.aws-access-key-id }}
+          aws-secret-access-key: ${{ steps.expose-aws-env.outputs.aws-secret-access-key }}
+          aws-session-token: ${{ steps.expose-aws-env.outputs.aws-session-token }}
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Login to Amazon ECR
@@ -73,7 +121,7 @@ jobs:
         env:
           BUNDLE_GEMFILE: ./kamal/Gemfile
         with:
-          ruby-version: 3.2.2
+          ruby-version: 3.4.2
           bundler-cache: true
 
       - name: Expose GitHub environment as shell variables
@@ -98,7 +146,7 @@ jobs:
           # Ensures that all Servers have docker installed
           bundle exec kamal server bootstrap
           # Push the environment variables to the servers
-          bundle exec kamal env push
+          # bundle exec kamal env push
 
       # INFO: Uncomment to add mysql to the server
       #       Also add all envs defiend in the deploy.yml as GitHub Environment vars.
