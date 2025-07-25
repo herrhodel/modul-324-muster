@@ -67,14 +67,14 @@ proxy:
 #     directories:
 #       - data:/var/lib/mysql
 
+builder:
+  arch: amd64
 # INFO: Nicht verwendet im Modul, wir builden direkt in der Github Action
 # Configure builder setup.
-# builder:
 #   context: ../nginx
 #   dockerfile: ../nginx/Dockerfile
 #   args:
 #     RUBY_VERSION: 3.4.2
 #   secrets:
 #     - GITHUB_TOKEN
-#   arch: amd64
 # remote: ssh://app@192.168.0.1
