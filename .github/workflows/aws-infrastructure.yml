@@ -31,11 +31,11 @@ jobs:
                   section=$key
               elif [[ $value ]] && [[ $section == '[default]' ]]; then
                   if [[ $key == 'aws_access_key_id' ]]; then
-                      echo "AWS_ACCESS_KEY_ID=`$value`" >> $GITHUB_ENV
+                      echo "AWS_ACCESS_KEY_ID=$value" >> $GITHUB_ENV
                   elif [[ $key == 'aws_secret_access_key' ]]; then
-                      echo "AWS_SECRET_ACCESS_KEY=`$value`" >> $GITHUB_ENV
+                      echo "AWS_SECRET_ACCESS_KEY=$value" >> $GITHUB_ENV
                   elif [[ $key == 'aws_session_token' ]]; then
-                      echo "AWS_SESSION_TOKEN=`$value`" >> $GITHUB_ENV
+                      echo "AWS_SESSION_TOKEN=$value" >> $GITHUB_ENV
                   fi
               fi
           done
