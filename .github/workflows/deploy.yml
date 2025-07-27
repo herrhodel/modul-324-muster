@@ -3,9 +3,9 @@ name: Deploy to Amazon AWS
 
 on:
   workflow_dispatch: # manuell via GUI
-  create:
+  push:
     tags:
-      - "*"
+      - 'v*'
     # branches: ["main"]
 
 env:
