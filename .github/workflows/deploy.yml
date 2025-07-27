@@ -3,7 +3,7 @@ name: Deploy to Amazon AWS
 
 on:
   workflow_dispatch: # manuell via GUI
-  push:
+  create:
     tags:
       - "*"
     # branches: ["main"]
