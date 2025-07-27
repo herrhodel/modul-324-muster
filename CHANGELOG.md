@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.2.0](https://github.com/herrhodel/modul-324-muster/compare/v1.1.1...v1.2.0) (2025-07-27)
+
+
+### Features
+
+* release tag trigger ([0b6cd5b](https://github.com/herrhodel/modul-324-muster/commit/0b6cd5bf189b6ab02e06bf9493d441e3ce2eb178))
+
+
+### Bug Fixes
+
+* on tag create trigger ([1c7fadb](https://github.com/herrhodel/modul-324-muster/commit/1c7fadb9c8f93e2ec891f0d6278efb65833239fb))
+
 ## [1.1.1](https://github.com/herrhodel/modul-324-muster/compare/v1.1.0...v1.1.1) (2025-07-27)
 
 
