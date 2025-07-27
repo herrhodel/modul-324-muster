@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.3.0 (2025-07-27)
+## [1.1.0](https://github.com/herrhodel/modul-324-muster/compare/v1.0.0...v1.1.0) (2025-07-27)
 
 
 ### Features
@@ -38,14 +38,13 @@
 * tag generation ([7d6d05c](https://github.com/herrhodel/modul-324-muster/commit/7d6d05c6c403d07da02f2cff26e40eb50aaba7ed))
 * **terraform:** remove cleanup ([9ba270a](https://github.com/herrhodel/modul-324-muster/commit/9ba270a2cdd2ceee9b1caf6fb0540cb63c291fe1))
 
-## [1.2.0](https://github.com/codingluke/bbzbl-modul-324-template/compare/v1.1.0...v1.2.0) (2024-11-10)
-
+## before semvers (2024-11-10)
 
 ### Features
 
 * **devcontainer:** Better mise support in Dockerfile ([bd92e38](https://github.com/codingluke/bbzbl-modul-324-template/commit/bd92e38a858b91da4b8c68af65536a45510925ae))
 
-## [1.1.0](https://github.com/codingluke/bbzbl-modul-324-template/compare/v1.0.0...v1.1.0) (2024-11-02)
+## before semvers (2024-11-02)
 
 
 ### Features
@@ -53,7 +52,7 @@
 * **devcontainer:** add docker-in-docker ([1509dee](https://github.com/codingluke/bbzbl-modul-324-template/commit/1509deecf73c72e642b0054c85203f957cbdb391))
 * **devcontainer:** add vscode plugins ([80624ac](https://github.com/codingluke/bbzbl-modul-324-template/commit/80624ac586921db79e6f0d1885d903f81af1eace))
 
-## 1.0.0 (2024-10-26)
+## before semvers (2024-10-26)
 
 
 ### Features
