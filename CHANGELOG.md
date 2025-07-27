@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.2](https://github.com/herrhodel/modul-324-muster/compare/v1.2.1...v1.2.2) (2025-07-27)
+
+
+### Bug Fixes
+
+* use correct aws role ([fe44bf4](https://github.com/herrhodel/modul-324-muster/commit/fe44bf4b9dee89b2a56375fbdeca28129b841b6c))
+
 ## [1.2.1](https://github.com/herrhodel/modul-324-muster/compare/v1.2.0...v1.2.1) (2025-07-27)
 
 
