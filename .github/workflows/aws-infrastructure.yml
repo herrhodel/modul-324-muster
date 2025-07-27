@@ -16,41 +16,20 @@ jobs:
     environment: aws
     outputs:
       server-ip: ${{ steps.terraform-apply.outputs.server-ip }}
-      aws-access-key-id: ${{ steps.expose-aws-env.outputs.aws-access-key-id }}
-      aws-secret-access-key: ${{ steps.expose-aws-env.outputs.aws-secret-access-key }}
-      aws-session-token: ${{ steps.expose-aws-env.outputs.aws-session-token }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Expose AWS Credential as ENV Vars
-        id: expose-aws-env
-        env:
-          AWS_CREDENTIALS: ${{ secrets.AWS_CREDENTIALS }}
-        run: |
-          printf "$AWS_CREDENTIALS\n" |
-          while IFS=' = ' read key value
-          do
-              if [[ $key == \[*] ]]; then
-                  section=$key
-              elif [[ $value ]] && [[ $section == '[default]' ]]; then
-                  if [[ $key == 'aws_access_key_id' ]]; then
-                      echo "aws-access-key-id=$value" >> $GITHUB_OUTPUT
-                  elif [[ $key == 'aws_secret_access_key' ]]; then
-                      echo "aws-secret-access-key=$value" >> $GITHUB_OUTPUT
-                  elif [[ $key == 'aws_session_token' ]]; then
-                      echo "aws-session-token=$value" >> $GITHUB_OUTPUT
-                  fi
-              fi
-          done
+      - uses: "./.github/shared/aws-credentials-to-env"
+        with:
+          aws-credentials: ${{ secrets.AWS_CREDENTIALS }}
 
-      # FIXME: Obuscate secrets!
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ steps.expose-aws-env.outputs.aws-access-key-id }}
-          aws-secret-access-key: ${{ steps.expose-aws-env.outputs.aws-secret-access-key }}
-          aws-session-token: ${{ steps.expose-aws-env.outputs.aws-session-token }}
+          aws-access-key-id: ${{ env.aws-access-key-id }}
+          aws-secret-access-key: ${{ env.aws-secret-access-key }}
+          aws-session-token: ${{ env.aws-session-token }}
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Login to Amazon ECR
@@ -79,33 +58,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Expose AWS Credential as ENV Vars
-        id: expose-aws-env
-        env:
-          AWS_CREDENTIALS: ${{ secrets.AWS_CREDENTIALS }}
-        run: |
-          printf "$AWS_CREDENTIALS\n" |
-          while IFS=' = ' read key value
-          do
-              if [[ $key == \[*] ]]; then
-                  section=$key
-              elif [[ $value ]] && [[ $section == '[default]' ]]; then
-                  if [[ $key == 'aws_access_key_id' ]]; then
-                      echo "aws-access-key-id=$value" >> $GITHUB_OUTPUT
-                  elif [[ $key == 'aws_secret_access_key' ]]; then
-                      echo "aws-secret-access-key=$value" >> $GITHUB_OUTPUT
-                  elif [[ $key == 'aws_session_token' ]]; then
-                      echo "aws-session-token=$value" >> $GITHUB_OUTPUT
-                  fi
-              fi
-          done
-
+      - uses: "./.github/shared/aws-credentials-to-env"
+        with:
+          aws-credentials: ${{ secrets.AWS_CREDENTIALS }}
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ steps.expose-aws-env.outputs.aws-access-key-id }}
-          aws-secret-access-key: ${{ steps.expose-aws-env.outputs.aws-secret-access-key }}
-          aws-session-token: ${{ steps.expose-aws-env.outputs.aws-session-token }}
+          aws-access-key-id: ${{ env.aws-access-key-id }}
+          aws-secret-access-key: ${{ env.aws-secret-access-key }}
+          aws-session-token: ${{ env.aws-session-token }}
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Login to Amazon ECR
@@ -124,18 +85,6 @@ jobs:
           ruby-version: 3.4.2
           bundler-cache: true
 
-      - name: Expose GitHub environment as shell variables
-        env:
-          SECRETS_CONTEXT: ${{ toJson(secrets) }}
-          VARS_CONTEXT: ${{ toJson(vars) }}
-        run: |
-          # https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#setting-an-environment-variable
-          # https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#multiline-strings
-          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
-          to_envs() { jq -r "( . // {} ) | to_entries[] | \"\(.key)<<$EOF\n\(.value)\n$EOF\n\""; }
-          echo "$VARS_CONTEXT" | to_envs >> $GITHUB_ENV
-          echo "$SECRETS_CONTEXT" | to_envs >> $GITHUB_ENV
-
       - name: Bootstrap Kamal
         working-directory: kamal
         env:
@@ -145,8 +94,6 @@ jobs:
         run: |
           # Ensures that all Servers have docker installed
           bundle exec kamal server bootstrap
-          # Push the environment variables to the servers
-          # bundle exec kamal env push
 
       # INFO: Uncomment to add mysql to the server
       #       Also add all envs defiend in the deploy.yml as GitHub Environment vars.
