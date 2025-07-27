@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/herrhodel/modul-324-muster/compare/v1.2.0...v1.2.1) (2025-07-27)
+
+
+### Bug Fixes
+
+* trigger tag by personal access token ([f3a6858](https://github.com/herrhodel/modul-324-muster/commit/f3a685886c73654dd9f336c4229033d45f627879))
+
 ## [1.2.0](https://github.com/herrhodel/modul-324-muster/compare/v1.1.1...v1.2.0) (2025-07-27)
 
 
