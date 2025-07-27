@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.3](https://github.com/herrhodel/modul-324-muster/compare/v1.2.2...v1.2.3) (2025-07-27)
+
+
+### Bug Fixes
+
+* remove aws role assuption ([ec4cca6](https://github.com/herrhodel/modul-324-muster/commit/ec4cca6863d856209a17101b2d0dd1fcd9f11e84))
+
 ## [1.2.2](https://github.com/herrhodel/modul-324-muster/compare/v1.2.1...v1.2.2) (2025-07-27)
 
 
