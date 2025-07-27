@@ -3,11 +3,10 @@ name: Deploy to Amazon AWS
 
 on:
   workflow_dispatch: # manuell via GUI
-  tags:
-    - "*"
-  # Bei jedem Push auf den main branch
-  # push:
-  #   branches: ["main"]
+  push:
+    tags:
+      - "*"
+    # branches: ["main"]
 
 env:
   AWS_REGION: us-east-1
