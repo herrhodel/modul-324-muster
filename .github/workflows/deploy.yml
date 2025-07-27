@@ -35,6 +35,7 @@ jobs:
           aws-access-key-id: ${{ env.aws-access-key-id }}
           aws-secret-access-key: ${{ env.aws-secret-access-key }}
           aws-session-token: ${{ env.aws-session-token }}
+          role-to-assume: arn:aws:iam::123456789012:role/my-github-actions-role
           aws-region: ${{ env.AWS_REGION }}
 
       - uses: webfactory/ssh-agent@v0.9.0
