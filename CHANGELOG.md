@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/herrhodel/modul-324-muster/compare/v1.1.0...v1.1.1) (2025-07-27)
+
+
+### Bug Fixes
+
+* deploy on trigger ([d124038](https://github.com/herrhodel/modul-324-muster/commit/d1240389e62f09b68df43441aa3f7ce7e29d5288))
+
 ## [1.1.0](https://github.com/herrhodel/modul-324-muster/compare/v1.0.0...v1.1.0) (2025-07-27)
 
 
