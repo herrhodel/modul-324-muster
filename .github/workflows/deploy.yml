@@ -2,9 +2,11 @@
 name: Deploy to Amazon AWS
 
 on:
-  workflow_dispatch:
-  push:
-    branches: ["main"]
+  workflow_dispatch: # manuell via GUI
+  release: released  # Wenn release-please einen release erstellt
+  # Bei jedem Push auf den main branch
+  # push:
+  #   branches: ["main"]
 
 env:
   AWS_REGION: us-east-1
