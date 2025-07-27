@@ -3,8 +3,8 @@ name: Deploy to Amazon AWS
 
 on:
   workflow_dispatch: # manuell via GUI
-  release:
-    types: [published] # Wenn release-please einen release erstellt
+  tags:
+    - "*"
   # Bei jedem Push auf den main branch
   # push:
   #   branches: ["main"]
@@ -71,7 +71,8 @@ jobs:
           images: |
             ${{ steps.login-ecr.outputs.registry }}/${{ env.DOCKER_IMAGE_NAME }}
           tags: |
-            type=sha
+            type=semver,pattern={{version}},event=tag
+            type=sha,event=branch
 
       - name: Build and push nginx Image
         uses: docker/build-push-action@v6
