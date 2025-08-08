@@ -11,7 +11,7 @@ on:
 
 env:
   AWS_REGION: us-east-1
-  DOCKER_IMAGE_NAME: m324/nginx
+  DOCKER_IMAGE_NAME: m324/myapp
 
 permissions:
   contents: read

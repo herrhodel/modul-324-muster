@@ -2,10 +2,10 @@
 # Name der Applikation
 # WARNING: muss gleich sein zum Label "service" des zu deployende Dockerfile
 #          siehe: `../../app/Dockerfile`
-service: nginx
+service: myapp
 
 # Name vom Container-Image
-image: m324/nginx
+image: m324/myapp
 
 # Auf diesen Server deployen
 # INFO: Wir verwenden die öffentliche IP der AWS-VM via CI-Pipeline
