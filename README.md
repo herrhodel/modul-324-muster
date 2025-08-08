@@ -30,8 +30,8 @@ zum Projekt in `markdown`-Dateien niederschreiben.
 
 ### [`/app`](./app)
 
-Der Ordner `/app` beinhaltet alle Dateien die benötigt werden um eine Applikation als docker image zu erstellen.
-Das darin liegende `/app/Dockerfile` beinhaltet die Beschreibung vom Image.
+Der Ordner [`/app`](./app) beinhaltet alle Dateien die benötigt werden um eine Applikation als docker image zu erstellen.
+Das darin liegende [`/app/Dockerfile`](./app/Dockerfile) beinhaltet die Beschreibung vom Image.
 
 > [!NOTE]
 > Dies ist die Standardapplikation, ein einfacher nginx Webserver, um das deployment nach AWS zu testen
@@ -40,20 +40,20 @@ Ihr solltet in eurem Projekt eine eigene Applikation erstellen.
 
 ### [`/terraform`](./terraform/README.md)
 
-Der Ordner `/terraform` beinhaltet die Konfiguration der AWS Umgebung. Terraform ermöglicht es für alle
+Der Ordner [`/terraform`](./terraform/) beinhaltet die Konfiguration der AWS Umgebung. Terraform ermöglicht es für alle
 die AWS Umgebung einheitlich, automatisch aufzusetzen. Zusätzlich beinhaltet es utility Scripts um z.B.
 die aktuelle IP vom Server herauszufinden.
 
 ### [`/kamal`](./kamal/README.md)
 
-Der Ordner `/kamal` beinhaltet die Konfiguration um ein Dockerfile Docker-image mit Hilfe des
+Der Ordner [`/kamal`](./kamal) beinhaltet die Konfiguration um ein Dockerfile Docker-image mit Hilfe des
 Utility-Frameworks [Kamal](https://kamal-deploy.org/) zu deployen.
 
 Es ist möglich eine Web-Applikation inclusive einer Datenbank auf eine beliebige VM zu deployen.
 
 ### [`/.github`](./.github)
 
-Im Ordner `.github` befinden sich GitHub spezifische Dateien. Dies sind in unserem Fall vor allem
+Im Ordner [`.github`](./.github) befinden sich GitHub spezifische Dateien. Dies sind in unserem Fall vor allem
 GitHub Action Workflows im Unterordner [.github/workflows](./.github/workflows).
 Dieser beinhaltet folgende zwei Dateien:
 
@@ -69,7 +69,7 @@ Dieser beinhaltet folgende zwei Dateien:
 
 ### [`/.devcontainer`](./.devcontainer)
 
-Im Ordner `.devcontainer` befindet sich das `Dockerfile` für den [DevContainer](https://containers.dev/) sowie auch die Spezifikation des devcontainers.
+Im Ordner [`.devcontainer`](./.devcontainer) befindet sich das `Dockerfile` für den [DevContainer](https://containers.dev/) sowie auch die Spezifikation des devcontainers.
 Das `./.devcontainer/Dockerfile` dient dazu eine einheitliche Entwicklungsumgebung für alle Projektmitglieder zur Verfügung zu stellen.
 
 > [!IMPORTANT]
