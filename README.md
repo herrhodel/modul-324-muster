@@ -6,26 +6,13 @@ Beispiel einer Applikation mit CI/CD Pipeline in die AWS Academy Umgebung.
 - Es wird eine Web-Applikation in die AWS Umgebung mit Hilfe von [Kamal](https://kamal-deploy.org/) deployed
 - Standardmässig wird die app im Ordner [`./app`](./app) deployed
 
-> [!NOTE] Dies ist das Muster zum kopieren
->
+> [!NOTE]
 > Dieses Repository dient als **Muster** um die Projekte im Modul 324 umzusetzen.
 > Ihr dürft alles von hier rauben.
 
-> [!IMPORTANT] Bitte nicht auf diesem Repo aufbauen!
->
+> [!IMPORTANT]
 > Zum Starten des Projekts, verwendet bitte das Repository [modul-324-starter](https://github.com/herrhodel/modul-324-starter)
 > Es ist besser leer zu starten und Schritt für Schritt von hier zu kopieren.
-
-## :information_desk_person: Anleitungen auf der Modulwebseite
-
-- [In AWS Umgebung starten](https://codingluke.github.io/bbzbl-modul-324/docs/lektionen/woche01/aufgabe-amazon-aws-umgebung-starten)
-- [AWS Credentials übertragen](https://codingluke.github.io/bbzbl-modul-324/docs/lektionen/woche01/nginx-example-klonen#aws-credentials-in-repository-environment-variablen-%C3%BCbertragen)
-- [AWS Umgebung aufsetzen](https://codingluke.github.io/bbzbl-modul-324/docs/lektionen/woche01/aufgabe-nginx-example-klonen#amazon-aws-infrastruktur-aufsetzten)
-- [Nginx Image bauen und ausliefern](https://codingluke.github.io/bbzbl-modul-324/docs/lektionen/woche01/aufgabe-nginx-example-klonen#nginx-image-bauen-und-ausliefern-deployen)
-- Lokale Entwicklungsumgebung konfigurieren
-- Devcontainer Dockerfile erweitern
-- Eine eigene Applikation erstellen
-- Eine eigene Applikation deployen
 
 ## :file_folder: Ordnerstruktur
 
@@ -51,18 +38,18 @@ Das darin liegende `/app/Dockerfile` beinhaltet die Beschreibung vom Image.
 
 Ihr solltet in eurem Projekt eine eigene Applikation erstellen.
 
+### [`/terraform`](./terraform/README.md)
+
+Der Ordner `/terraform` beinhaltet die Konfiguration der AWS Umgebung. Terraform ermöglicht es für alle
+die AWS Umgebung einheitlich, automatisch aufzusetzen. Zusätzlich beinhaltet es utility Scripts um z.B.
+die aktuelle IP vom Server herauszufinden.
+
 ### [`/kamal`](./kamal/README.md)
 
 Der Ordner `/kamal` beinhaltet die Konfiguration um ein Dockerfile Docker-image mit Hilfe des
 Utility-Frameworks [Kamal](https://kamal-deploy.org/) zu deployen.
 
 Es ist möglich eine Web-Applikation inclusive einer Datenbank auf eine beliebige VM zu deployen.
-
-### [`/terraform`](./terraform/README.md)
-
-Der Ordner `/terraform` beinhaltet die Konfiguration der AWS Umgebung. Terraform ermöglicht es für alle
-die AWS Umgebung einheitlich, automatisch aufzusetzen. Zusätzlich beinhaltet es utility Scripts um z.B.
-die aktuelle IP vom Server herauszufinden.
 
 ### [`/.github`](./.github)
 
