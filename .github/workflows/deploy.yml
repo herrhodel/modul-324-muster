@@ -80,8 +80,8 @@ jobs:
       # Entspricht `docker build .` und `docker push`, nur konfortabler und schneller mit cache
       - name: Build and push application image to regisrty
         uses: docker/build-push-action@v6
-        working-directory: app
         with:
+          context: ./app
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           cache-from: type=gha
