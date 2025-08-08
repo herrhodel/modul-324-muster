@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.3.0](https://github.com/herrhodel/modul-324-muster/compare/v1.2.3...v1.3.0) (2025-08-08)
+
+
+### Features
+
+* even more generalize app ([27648ca](https://github.com/herrhodel/modul-324-muster/commit/27648ca5a981d6955d08453fd7f2d2ac73e3894b))
+
+
+### Bug Fixes
+
+* deploy workflow ([3d8bffc](https://github.com/herrhodel/modul-324-muster/commit/3d8bffc3700f569773722ac6c71e8366c2b1bc71))
+
 ## [1.2.3](https://github.com/herrhodel/modul-324-muster/compare/v1.2.2...v1.2.3) (2025-07-27)
 
 
