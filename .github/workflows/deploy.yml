@@ -5,7 +5,8 @@ on:
   workflow_dispatch: # manuell via GUI
   push:
     tags:
-      - 'v*'
+      - "v*"
+    # INFO: dies würde bei jedem push auf main nach AWS deployen
     # branches: ["main"]
 
 env:
@@ -56,6 +57,7 @@ jobs:
           ruby-version: 3.4.2
           bundler-cache: true
 
+      # Entspricht `docker login``
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
@@ -63,6 +65,8 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      # Definiert die docker image name und tags
+      # Falls es sich um ein Tag handelt wird der Tag verwendet, sonst der git-commit hash
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v5
@@ -73,15 +77,17 @@ jobs:
             type=semver,pattern={{version}},event=tag
             type=sha,event=branch
 
-      - name: Build and push nginx Image
+      # Entspricht `docker build .` und `docker push`, nur konfortabler und schneller mit cache
+      - name: Build and push application image to regisrty
         uses: docker/build-push-action@v6
+        working-directory: app
         with:
-          context: ./nginx
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+      # Deployed das erstellte Image nach AWS
       - name: Kamal deploy image
         working-directory: kamal
         env:

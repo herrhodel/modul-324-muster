@@ -4,7 +4,7 @@ Beispiel einer Applikation mit CI/CD Pipeline in die AWS Academy Umgebung.
 
 - Es wird die AWS Umgebung mit Hilfe von [Terraform](https://developer.hashicorp.com/terraform/intro) aufgesetzt
 - Es wird eine Web-Applikation in die AWS Umgebung mit Hilfe von [Kamal](https://kamal-deploy.org/) deployed
-- Standardmässig wird die app [`./nginx`](./nginx) deployed
+- Standardmässig wird die app im Ordner [`./app`](./app) deployed
 
 > [!NOTE] Dies ist das Muster zum kopieren
 >
@@ -41,19 +41,19 @@ zum Projekt in `markdown`-Dateien niederschreiben.
 > - Am besten erstellt jeder einen Unterordner `/docs/reflections/ihr-nachname`.
 > - Für jede Sprint-Reflexion sollte eine neue Datei erstellt werden.
 
-### [`/nginx`](./nginx)
+### [`/app`](./app)
 
-Der Ordner `/nginx` beinhaltet alle Dateien die benötigt werden, um ein nginx docker image zu erstellen.
-Das darin liegende `/nginx/Dockerfile` beinhaltet die Beschreibung vom Image.
+Der Ordner `/app` beinhaltet alle Dateien die benötigt werden um eine Applikation als docker image zu erstellen.
+Das darin liegende `/app/Dockerfile` beinhaltet die Beschreibung vom Image.
 
 > [!NOTE]
-> Dies ist die Standardapplikation um das deployment nach AWS zu testen
+> Dies ist die Standardapplikation, ein einfacher nginx Webserver, um das deployment nach AWS zu testen
 
 Ihr solltet in eurem Projekt eine eigene Applikation erstellen.
 
 ### [`/kamal`](./kamal/README.md)
 
-Der Ordner `/kamal` beinhaltet die Konfiguration um ein Docker-image mit Hilfe des
+Der Ordner `/kamal` beinhaltet die Konfiguration um ein Dockerfile Docker-image mit Hilfe des
 Utility-Frameworks [Kamal](https://kamal-deploy.org/) zu deployen.
 
 Es ist möglich eine Web-Applikation inclusive einer Datenbank auf eine beliebige VM zu deployen.

@@ -1,7 +1,7 @@
 # yaml-language-server: $schema=https://json.schemastore.org/yamllint.json
 # Name der Applikation
 # WARNING: muss gleich sein zum Label "service" des zu deployende Dockerfile
-#          siehe: `../../nginx/Dockerfile`
+#          siehe: `../../app/Dockerfile`
 service: nginx
 
 # Name vom Container-Image
@@ -64,8 +64,8 @@ builder:
   arch: amd64
 # INFO: Nicht verwendet im Modul, wir builden direkt in der Github Action
 # Configure builder setup.
-#   context: ../nginx
-#   dockerfile: ../nginx/Dockerfile
+#   context: ../app
+#   dockerfile: ../app/Dockerfile
 #   args:
 #     RUBY_VERSION: 3.4.2
 #   secrets:

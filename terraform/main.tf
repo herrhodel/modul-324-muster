@@ -22,7 +22,7 @@ resource "aws_vpc" "myvpc" {
   enable_dns_hostnames = true
   enable_dns_support   = true
   tags = {
-    App = "nginx-example"
+    App = "myapp"
   }
 }
 
@@ -31,7 +31,7 @@ resource "aws_internet_gateway" "mygateway" {
   vpc_id = aws_vpc.myvpc.id
 
   tags = {
-    App = "nginx-example"
+    App = "myapp"
   }
 }
 
@@ -41,7 +41,7 @@ resource "aws_subnet" "mysubnet" {
   cidr_block              = "10.0.1.0/24"
   map_public_ip_on_launch = true
   tags = {
-    App = "nginx-example"
+    App = "myapp"
   }
 }
 
@@ -75,7 +75,7 @@ resource "aws_security_group" "mysecuritygroup" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   tags = {
-    App = "nginx-example"
+    App = "myapp"
   }
 }
 
@@ -86,7 +86,7 @@ resource "aws_route_table" "my-route-table" {
     gateway_id = aws_internet_gateway.mygateway.id
   }
   tags = {
-    App = "nginx-example"
+    App = "myapp"
   }
 }
 
@@ -118,7 +118,7 @@ EOF
   key_name             = "vockey"             # Vockey is added by the aws lab by default
   iam_instance_profile = "LabInstanceProfile" # LabInstanceProfile is added by the aws lab by default
   tags = {
-    App = "nginx-example"
+    App = "myapp"
   }
 }
 
@@ -139,6 +139,6 @@ resource "aws_ecr_repository" "myecr" {
     scan_on_push = true
   }
   tags = {
-    App = "nginx-example"
+    App = "myapp"
   }
 }
