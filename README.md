@@ -55,7 +55,7 @@ Es ist möglich eine Web-Applikation inclusive einer Datenbank auf eine beliebig
 
 Im Ordner [`.github`](./.github) befinden sich GitHub spezifische Dateien. Dies sind in unserem Fall vor allem
 GitHub Action Workflows im Unterordner [.github/workflows](./.github/workflows).
-Dieser beinhaltet folgende zwei Dateien:
+Dieser beinhaltet folgende Dateien:
 
 - **Setup Infrastructure on Amazon AWS** [`./.github/workflows/aws-infrastructure.yml`](./.github/workflows/aws-infrastructure.yml)
 
@@ -66,6 +66,19 @@ Dieser beinhaltet folgende zwei Dateien:
 
   Die Action "Deploy to Amazon AWS" baut das Docker-Image, ladet es in die Docker-Registry der AWS Umgebung
   und startet das Docker-Image als Container auf der Ubuntu VM.
+
+- **Terraform via GHCR-backed state** [`./.github/workflows/terraform.yml`](./.github/workflows/terraform.yml)
+
+  Die Action "Terraform via GHCR-backed state" verwaltet Terraform State verschlüsselt in GitHub Container Registry (GHCR).
+  Siehe [Dokumentation](./docs/terraform-state-ghcr.md) für Details zur Konfiguration.
+
+- **Terraform Destroy** [`./.github/workflows/terraform-destroy.yml`](./.github/workflows/terraform-destroy.yml)
+
+  Manuelle Workflow zum sicheren Zerstören der Terraform-Infrastruktur mit Bestätigungsschritt.
+
+- **Terraform State Pruning** [`./.github/workflows/terraform-prune-states.yml`](./.github/workflows/terraform-prune-states.yml)
+
+  Automatische monatliche Bereinigung alter Terraform State-Versionen in GHCR.
 
 ### [`/.devcontainer`](./.devcontainer)
 
