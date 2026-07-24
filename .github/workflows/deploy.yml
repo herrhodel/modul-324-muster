@@ -24,21 +24,21 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - uses: "./.github/shared/aws-credentials-to-env"
         with:
           aws-credentials: ${{ secrets.AWS_CREDENTIALS }}
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-access-key-id: ${{ env.aws-access-key-id }}
           aws-secret-access-key: ${{ env.aws-secret-access-key }}
           aws-session-token: ${{ env.aws-session-token }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - uses: webfactory/ssh-agent@v0.9.0
+      - uses: webfactory/ssh-agent@v0.10.0
         with:
           ssh-private-key: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
 
@@ -63,13 +63,13 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
 
       # Definiert die docker image name und tags
       # Falls es sich um ein Tag handelt wird der Tag verwendet, sonst der git-commit hash
       - name: Docker meta
         id: meta
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@v6
         with:
           images: |
             ${{ steps.login-ecr.outputs.registry }}/${{ env.DOCKER_IMAGE_NAME }}
@@ -79,7 +79,7 @@ jobs:
 
       # Entspricht `docker build .` und `docker push`, nur konfortabler und schneller mit cache
       - name: Build and push application image to regisrty
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: ./app
           push: true
