@@ -32,9 +32,9 @@ jobs:
           aws-session-token: ${{ env.aws-session-token }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
+      # - name: Login to Amazon ECR
+      #   id: login-ecr
+      #   uses: aws-actions/amazon-ecr-login@v2
 
       - name: Setup Terraform CLI
         uses: hashicorp/setup-terraform@v4
@@ -54,6 +54,11 @@ jobs:
     needs: terraform
     runs-on: ubuntu-latest
     environment: aws
+    services:
+      registry:
+        image: registry:3
+        ports:
+          - 5000:5000
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -89,8 +94,10 @@ jobs:
         working-directory: kamal
         env:
           KAMAL_SERVER_IP: ${{ needs.terraform.outputs.server-ip }}
-          KAMAL_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          KAMAL_REGISTRY_PASSWORD: ${{ steps.login-ecr.outputs[format('docker_password_{0}_dkr_ecr_us_east_1_amazonaws_com', secrets.AWS_ACCOUNT_ID)] }}
+          KAMAL_REGISTRY: localhost:5000
+          KAMAL_REGISTRY_PASSWORD: ""
+          # KAMAL_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          # KAMAL_REGISTRY_PASSWORD: ${{ steps.login-ecr.outputs[format('docker_password_{0}_dkr_ecr_us_east_1_amazonaws_com', secrets.AWS_ACCOUNT_ID)] }}
         run: |
           # Ensures that all Servers have docker installed
           bundle exec kamal server bootstrap

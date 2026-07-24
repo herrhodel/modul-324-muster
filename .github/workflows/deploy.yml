@@ -21,6 +21,11 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
     environment: aws
+    services:
+      registry:
+        image: registry:3
+        ports:
+          - 5000:5000
 
     steps:
       - name: Checkout
@@ -58,12 +63,14 @@ jobs:
           bundler-cache: true
 
       # Entspricht `docker login``
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
+      # - name: Login to Amazon ECR
+      #   id: login-ecr
+      #   uses: aws-actions/amazon-ecr-login@v2
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
+        with:
+          driver-opts: network=host
 
       # Definiert die docker image name und tags
       # Falls es sich um ein Tag handelt wird der Tag verwendet, sonst der git-commit hash
@@ -72,7 +79,7 @@ jobs:
         uses: docker/metadata-action@v6
         with:
           images: |
-            ${{ steps.login-ecr.outputs.registry }}/${{ env.DOCKER_IMAGE_NAME }}
+            localhost:5000/${{ env.DOCKER_IMAGE_NAME }}
           tags: |
             type=semver,pattern={{version}},event=tag
             type=sha,event=branch
@@ -92,8 +99,10 @@ jobs:
         working-directory: kamal
         env:
           KAMAL_SERVER_IP: ${{ env.SERVER_IP }}
-          KAMAL_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          KAMAL_REGISTRY_PASSWORD: ${{ steps.login-ecr.outputs[format('docker_password_{0}_dkr_ecr_us_east_1_amazonaws_com', secrets.AWS_ACCOUNT_ID)] }}
+          KAMAL_REGISTRY: "localhost:5000"
+          KAMAL_REGISTRY_PASSWORD: ""
+          # KAMAL_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          # KAMAL_REGISTRY_PASSWORD: ${{ steps.login-ecr.outputs[format('docker_password_{0}_dkr_ecr_us_east_1_amazonaws_com', secrets.AWS_ACCOUNT_ID)] }}
           VERSION: ${{ steps.meta.outputs.version }}
         run: |
           bundle exec kamal deploy --skip-push --version=$VERSION
