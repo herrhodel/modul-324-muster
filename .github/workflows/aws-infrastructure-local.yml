@@ -1,5 +1,5 @@
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
-name: Setup Infrastructure on Amazon AWS
+name: Setup Infrastructure on Amazon AWS (Local)
 
 on: workflow_dispatch
 
@@ -32,10 +32,6 @@ jobs:
           aws-session-token: ${{ env.aws-session-token }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
-
       - name: Setup Terraform CLI
         uses: hashicorp/setup-terraform@v4
         with:
@@ -54,6 +50,11 @@ jobs:
     needs: terraform
     runs-on: ubuntu-latest
     environment: aws
+    services:
+      registry:
+        image: registry:3
+        ports:
+          - 5000:5000
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -68,10 +69,6 @@ jobs:
           aws-secret-access-key: ${{ env.aws-secret-access-key }}
           aws-session-token: ${{ env.aws-session-token }}
           aws-region: ${{ env.AWS_REGION }}
-
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
 
       - uses: webfactory/ssh-agent@v0.10.0
         with:
@@ -89,8 +86,8 @@ jobs:
         working-directory: kamal
         env:
           KAMAL_SERVER_IP: ${{ needs.terraform.outputs.server-ip }}
-          KAMAL_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          KAMAL_REGISTRY_PASSWORD: ${{ steps.login-ecr.outputs[format('docker_password_{0}_dkr_ecr_us_east_1_amazonaws_com', secrets.AWS_ACCOUNT_ID)] }}
+          KAMAL_REGISTRY: localhost:5000
+          KAMAL_REGISTRY_PASSWORD: ""
         run: |
           # Ensures that all Servers have docker installed
           bundle exec kamal server bootstrap

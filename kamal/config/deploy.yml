@@ -18,10 +18,10 @@ servers:
 registry:
   # Specify the registry server, if you're not using Docker Hub
   server: <%= ENV.fetch('KAMAL_REGISTRY') || 'not-defined' %>
-  # username: AWS
-  #
-  # # Always use an access token rather than real password when possible.
-  # password: <%= ENV.fetch('KAMAL_REGISTRY_PASSWORD') || 'not-defined' %>
+  username: AWS
+
+  # Always use an access token rather than real password when possible.
+  password: <%= ENV.fetch('KAMAL_REGISTRY_PASSWORD') || 'not-defined' %>
 
 ssh:
   user: ubuntu

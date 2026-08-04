@@ -128,18 +128,18 @@ output "ubuntu2404_public_ip" {
 
 # Container Registry auf AWS ------------------
 
-# # INFO : https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecr_repository
-# resource "aws_ecr_repository" "myecr" {
-#   name                 = "m324/myapp"
-#   image_tag_mutability = "MUTABLE"
-#   force_delete         = true
-#   encryption_configuration {
-#     encryption_type = "KMS"
-#   }
-#   image_scanning_configuration {
-#     scan_on_push = true
-#   }
-#   tags = {
-#     App = "myapp"
-#   }
-# }
+# INFO : https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecr_repository
+resource "aws_ecr_repository" "myecr" {
+  name                 = "m324/myapp"
+  image_tag_mutability = "MUTABLE"
+  force_delete         = true
+  encryption_configuration {
+    encryption_type = "KMS"
+  }
+  image_scanning_configuration {
+    scan_on_push = true
+  }
+  tags = {
+    App = "myapp"
+  }
+}
