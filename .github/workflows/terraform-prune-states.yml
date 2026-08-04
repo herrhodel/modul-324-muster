@@ -1,0 +1,92 @@
+name: Prune old Terraform states from GHCR
+
+on:
+  schedule:
+    # Run monthly on the 1st at 2 AM UTC
+    - cron: '0 2 1 * *'
+  workflow_dispatch:
+    inputs:
+      keep_versions:
+        description: 'Number of versions to keep per tag'
+        required: false
+        default: '5'
+      dry_run:
+        description: 'Dry run (do not delete, just list)'
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  STATE_IMAGE: ghcr.io/${{ github.repository }}/terraform-state
+  KEEP_VERSIONS: ${{ github.event.inputs.keep_versions || '5' }}
+  DRY_RUN: ${{ github.event.inputs.dry_run || 'true' }}
+
+jobs:
+  prune-states:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install oras and jq
+        run: |
+          set -euxo pipefail
+          ORAS_VERSION=1.2.0
+          curl -sL "https://github.com/oras-project/oras/releases/download/v${ORAS_VERSION}/oras_${ORAS_VERSION}_linux_amd64.tar.gz" \
+            | sudo tar -xz -C /usr/local/bin oras
+          sudo apt-get update && sudo apt-get install -y jq
+          oras version
+
+      - name: Login to GHCR
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "${GITHUB_TOKEN}" | oras login ghcr.io -u "${GITHUB_ACTOR}" --password-stdin
+
+      - name: List and prune old state versions
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          
+          echo "Fetching tags for ${STATE_IMAGE}..."
+          
+          # Get all tags using GitHub API (more reliable than oras repo tags)
+          REPO_OWNER="${GITHUB_REPOSITORY%/*}"
+          REPO_NAME="${GITHUB_REPOSITORY#*/}"
+          
+          # List all versions of the terraform-state package
+          curl -s -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/orgs/${REPO_OWNER}/packages/container/$(echo "${REPO_NAME}/terraform-state" | tr '[:upper:]' '[:lower:]')/versions" \
+            > /tmp/versions.json
+          
+          # Extract versions, sort by created date (newest first), skip the first N to keep
+          jq -r --argjson keep "${KEEP_VERSIONS}" '
+            sort_by(.created_at) | reverse | 
+            if length > $keep then .[($keep):] else empty end |
+            .[] | "\(.id) \(.metadata.container.tags[]? // "untagged") \(.created_at)"
+          ' /tmp/versions.json > /tmp/to_delete.txt
+          
+          if [ ! -s /tmp/to_delete.txt ]; then
+            echo "No old versions to delete (keeping ${KEEP_VERSIONS} most recent versions)"
+            exit 0
+          fi
+          
+          echo "Versions to delete:"
+          cat /tmp/to_delete.txt
+          
+          if [ "${DRY_RUN}" == "true" ]; then
+            echo "DRY RUN: Would delete the above versions"
+            echo "Set dry_run to false to actually delete them"
+          else
+            echo "Deleting old versions..."
+            while IFS=' ' read -r version_id tag created_at; do
+              echo "Deleting version ${version_id} (tag: ${tag}, created: ${created_at})"
+              curl -s -X DELETE \
+                -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+                -H "Accept: application/vnd.github.v3+json" \
+                "https://api.github.com/orgs/${REPO_OWNER}/packages/container/$(echo "${REPO_NAME}/terraform-state" | tr '[:upper:]' '[:lower:]')/versions/${version_id}"
+            done < /tmp/to_delete.txt
+            echo "Pruning completed"
+          fi

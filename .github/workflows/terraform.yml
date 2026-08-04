@@ -1,0 +1,121 @@
+name: Terraform via GHCR-backed state
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: terraform-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  # OCI ref for state. Example: ghcr.io/owner/repo/terraform-state
+  STATE_IMAGE: ghcr.io/${{ github.repository }}/terraform-state
+  # Encrypted blob name inside the OCI artifact
+  STATE_BLOB: terraform.tfstate.enc
+  TF_VERSION: 1.9.5
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        # Set this if your TF code is in a subfolder:
+        working-directory: terraform
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Sanitize branch name for OCI tag
+        id: sanitize
+        run: |
+          # Convert branch name to valid OCI tag (lowercase, replace invalid chars)
+          TAG=$(echo "${{ github.ref_name }}" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9._-]/-/g' | sed 's/^[.-]//g' | sed 's/[.-]$//g')
+          echo "STATE_TAG=${TAG}" >> "$GITHUB_OUTPUT"
+          echo "Using sanitized tag: ${TAG}"
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Install oras
+        run: |
+          set -euxo pipefail
+          ORAS_VERSION=1.2.0
+          curl -sL "https://github.com/oras-project/oras/releases/download/v${ORAS_VERSION}/oras_${ORAS_VERSION}_linux_amd64.tar.gz" \
+            | sudo tar -xz -C /usr/local/bin oras
+          oras version
+
+      # Pull existing encrypted state from GHCR (if exists)
+      - name: Pull encrypted state from GHCR (if any)
+        id: pull_state
+        env:
+          REF: ${{ env.STATE_IMAGE }}:${{ steps.sanitize.outputs.STATE_TAG }}
+        run: |
+          set -e
+          mkdir -p .tfstate_store
+          if oras manifest fetch "$REF" >/dev/null 2>&1; then
+            oras pull "$REF" -o .tfstate_store
+          else
+            echo "no_state=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Decrypt state if present
+        if: steps.pull_state.outputs.no_state != 'true' && hashFiles('.tfstate_store/${{ env.STATE_BLOB }}') != ''
+        env:
+          STATE_PASSPHRASE: ${{ secrets.STATE_PASSPHRASE }}
+        run: |
+          openssl enc -d -aes-256-cbc -md sha256 \
+            -in ".tfstate_store/${STATE_BLOB}" \
+            -out terraform.tfstate \
+            -pass pass:"${STATE_PASSPHRASE}"
+
+      - name: Terraform init
+        run: terraform init -input=false
+
+      - name: Terraform validate
+        run: terraform validate
+
+      - name: Terraform plan
+        run: terraform plan -input=false -out=tfplan
+
+      - name: Terraform apply (main only)
+        if: github.ref == 'refs/heads/main'
+        run: terraform apply -input=false -auto-approve tfplan
+
+      - name: Encrypt state (if changed/exists)
+        env:
+          STATE_PASSPHRASE: ${{ secrets.STATE_PASSPHRASE }}
+        run: |
+          mkdir -p .tfstate_store
+          if [ -s terraform.tfstate ]; then
+            openssl enc -e -aes-256-cbc -md sha256 \
+              -in terraform.tfstate \
+              -out ".tfstate_store/${STATE_BLOB}" \
+              -pass pass:"${STATE_PASSPHRASE}"
+          fi
+
+      - name: Login to GHCR
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "${GITHUB_TOKEN}" | oras login ghcr.io -u "${GITHUB_ACTOR}" --password-stdin
+
+      - name: Push encrypted state to GHCR
+        if: hashFiles('.tfstate_store/${{ env.STATE_BLOB }}') != ''
+        env:
+          REF: ${{ env.STATE_IMAGE }}:${{ steps.sanitize.outputs.STATE_TAG }}
+        run: |
+          oras push "$REF" \
+            --artifact-type application/vnd.terraform.state.encrypted \
+            ".tfstate_store/${STATE_BLOB}:application/octet-stream"
