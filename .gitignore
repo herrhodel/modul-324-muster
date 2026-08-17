@@ -76,3 +76,6 @@ terraform.rc
 # End of https://www.toptal.com/developers/gitignore/api/macos,terraform
 nohup.out
 .idea
+app/.parcel-cache
+app/dist
+app/node_modules

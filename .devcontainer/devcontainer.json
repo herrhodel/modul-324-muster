@@ -21,7 +21,7 @@
     "ghcr.io/devcontainers/features/docker-in-docker:2": {}
   },
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
-  "forwardPorts": [3000,3001],
+  // "forwardPorts": [3000,3001,4200,5000,1234,8080],
   // Uncomment the next line if you want start specific services in your Docker Compose config.
   "runServices": [
     "devcontainer"
