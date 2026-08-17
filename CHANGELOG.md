@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.4.0](https://github.com/herrhodel/modul-324-muster/compare/v1.3.0...v1.4.0) (2026-08-17)
+
+
+### Features
+
+* delete rcp when changed ([d99d89b](https://github.com/herrhodel/modul-324-muster/commit/d99d89b4bf54fb6f1897c9980793101652b5c076))
+* make local parallel ([9ab4bb4](https://github.com/herrhodel/modul-324-muster/commit/9ab4bb45f7ddec2eeca706b6b3ee26688754a7c0))
+* use local docker registry ([4df12bb](https://github.com/herrhodel/modul-324-muster/commit/4df12bb42e74ee34ec566f151ba648dd1546e6a4))
+
 ## [1.3.0](https://github.com/herrhodel/modul-324-muster/compare/v1.2.3...v1.3.0) (2025-08-08)
 
 
