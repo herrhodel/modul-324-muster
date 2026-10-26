@@ -12,7 +12,7 @@ permissions:
 jobs:
   terraform:
     name: Create AWS ressources
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     environment: aws
     outputs:
       server-ip: ${{ steps.terraform-apply.outputs.server-ip }}
@@ -52,7 +52,7 @@ jobs:
   kamal:
     name: Bootstrap Kamal on AWS EC2 instance
     needs: terraform
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     environment: aws
     steps:
       - name: Checkout
